@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.awt.print.Pageable;
 import java.util.List;
+import java.util.Optional;
 
 
 @Repository
@@ -19,4 +20,6 @@ public interface AuthorRepository extends JpaRepository<Author, Long> {
     @Query(value = "SELECT * FROM author ORDER BY RANDOM() LIMIT :limit", nativeQuery = true)
     List<Author> findRandomAuthors(@Param("limit") int limit);
 
+
+    Optional<Author> findByAuthorName(String name);
 }

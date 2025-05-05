@@ -21,5 +21,6 @@ public class BookAuthor {
     @JoinColumn(name = "author_id", insertable = false, updatable = false)
     private Author author;
 
+
 }
 

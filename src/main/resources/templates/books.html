@@ -16,7 +16,7 @@
 
         <!-- Основное содержимое -->
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
-            <div class="container">
+            <div class="container col-md-9">
                 <header class="header">
                     <h1 class="page-title">Все книги</h1>
                     <div class="controls">
@@ -29,7 +29,8 @@
                     </div>
                 </header>
             </div>
-            <div class="books-grid">
+            <a th:href="@{books/bookform}" class="btn btn-primary mb-3">Добавить книгу</a>
+            <div class="container books-grid col-md-9">
                 <div th:each="book : ${books}" class="book-card">
                     <div class="book-cover-container">
                         <img th:if="${book.coverUrl != null}"
@@ -56,8 +57,8 @@
                         <div class="book-genre" th:text="${book.getGenre().getName()}"></div>
 
                         <div class="book-actions">
-                            <button class="btn btn-primary">Подробнее</button>
-                            <button class="btn btn-outline-secondary">Добавить в коллекцию</button>
+                            <button class="btn btn-dark">Подробнее</button>
+                            <button class="btn btn-light">Хочу прочитать</button>
                         </div>
                     </div>
                 </div>
