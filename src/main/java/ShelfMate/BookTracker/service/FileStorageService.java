@@ -20,7 +20,6 @@ public class FileStorageService {
             return null;
         }
 
-
         String fileExtension = file.getOriginalFilename();
         String newFilename = UUID.randomUUID() + fileExtension ;
         Path uploadDir = Paths.get("src/main/resources/static/images/books");

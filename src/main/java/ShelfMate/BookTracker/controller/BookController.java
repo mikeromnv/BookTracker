@@ -8,6 +8,7 @@ import ShelfMate.BookTracker.service.BookService;
 import ShelfMate.BookTracker.service.GenreService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,11 +17,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.io.IOException;
 import java.util.List;
 
 @Controller
 @RequestMapping("/books")
 @RequiredArgsConstructor
+@Slf4j
 public class BookController {
 
     private final BookService bookService;
@@ -38,32 +41,40 @@ public class BookController {
 
     @GetMapping("/bookform")
     public String showBookForm(Model model) {
-        model.addAttribute("bookForm", new BookForm()); // Убедитесь, что имя совпадает с th:object в форме
-        model.addAttribute("genres", genreService.getAllGenres());   // Если используется select
-        return "book/bookform";
+        model.addAttribute("bookForm", new BookForm());
+        model.addAttribute("authors", authorService.getAllAuthors());
+        model.addAttribute("genres", genreService.getAllGenres());
+        return "book/bookform"; // путь к шаблону
     }
-
     @PostMapping("/add")
-    public String addBook(@ModelAttribute("bookForm") @Valid BookForm bookForm,
-                          BindingResult result,
-                          Model model) {
-
+    public String saveBook(
+            @ModelAttribute("bookForm") @Valid BookForm bookForm,
+            BindingResult result,
+            Model model) throws IOException {
+        log.info("Получены данные: {}", bookForm);
         if (result.hasErrors()) {
-            model.addAttribute("books", bookService.getAllBooks());
+            log.error("Ошибки валидации: {}", result.getAllErrors());
+            model.addAttribute("authors", authorService.getAllAuthors());
             model.addAttribute("genres", genreService.getAllGenres());
             return "book/bookform";
         }
 
         try {
-            bookService.addNewBook(bookForm);
+            bookService.saveBookWithAuthors(bookForm);
             return "redirect:/books?success";
         } catch (Exception e) {
-            model.addAttribute("error", "Ошибка при добавлении книги: " + e.getMessage());
-            model.addAttribute("books", bookService.getAllBooks());
+            log.error("Ошибка сохранения: ", e);
+            model.addAttribute("error", "Ошибка при сохранении: " + e.getMessage());
+            model.addAttribute("authors", authorService.getAllAuthors());
             model.addAttribute("genres", genreService.getAllGenres());
             return "book/bookform";
         }
+//        return "redirect:/books";
     }
+
+
+
+
 
 
 

@@ -18,8 +18,7 @@ public class Author {
 
     private String bio;
 
-    @ManyToMany(mappedBy = "authors")
-    private List<Book> books = new ArrayList<>();
+    @OneToMany(mappedBy = "author")
+    private List<BookAuthor> bookAuthors = new ArrayList<>();
 
-    // Геттеры, сеттеры, конструкторы
 }

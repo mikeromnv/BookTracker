@@ -93,7 +93,7 @@
               <h5 class="card-title">Топ авторов</h5>
               <div th:each="author : ${random_authors}" class="author-badge">
                 <span th:text="${author.authorName}">Автор</span>
-                <span class="badge bg-secondary" th:text="${#lists.size(author.books)} + ' произведений'">0 произведений</span>
+                <span class="badge bg-secondary" th:text="${#lists.size(author.bookAuthors)} + ' произведений'">0 произведений</span>
               </div>
             </div>
           </div>

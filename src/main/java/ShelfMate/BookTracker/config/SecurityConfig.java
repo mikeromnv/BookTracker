@@ -48,7 +48,11 @@ public class SecurityConfig {
                                 "/profile",
                                 "/books",
                                 "/books/**",
-                                "books/bookform"
+                                "/books/add",
+                                "books/bookform",
+                                "/authors/",
+                                "/authors/new",
+                                "/authors/add"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
