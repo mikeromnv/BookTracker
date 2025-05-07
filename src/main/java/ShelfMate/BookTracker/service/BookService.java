@@ -1,14 +1,8 @@
 package ShelfMate.BookTracker.service;
 
 import ShelfMate.BookTracker.dto.BookForm;
-import ShelfMate.BookTracker.model.Author;
-import ShelfMate.BookTracker.model.Book;
-import ShelfMate.BookTracker.model.BookAuthor;
-import ShelfMate.BookTracker.model.Genre;
-import ShelfMate.BookTracker.repository.AuthorRepository;
-import ShelfMate.BookTracker.repository.BookAuthorRepository;
-import ShelfMate.BookTracker.repository.BookRepository;
-import ShelfMate.BookTracker.repository.GenreRepository;
+import ShelfMate.BookTracker.model.*;
+import ShelfMate.BookTracker.repository.*;
 import jakarta.annotation.Resource;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -36,6 +30,10 @@ public class BookService {
     private final GenreRepository genreRepository;
     private final FileStorageService fileStorageService;
     private final BookAuthorRepository bookAuthorRepository;
+    private final CategoryService categoryRepository;
+    private final UserBookRepository userBookRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     public List<Book> getAllBooks() {
         return bookRepository.findAll();
@@ -43,8 +41,9 @@ public class BookService {
     public List<Book> getRandomBooks(int count) {
         return bookRepository.findRandomBooks(count);
     }
-
-
+    public Book getBookById(Long id) {
+        return bookRepository.findById(id).orElse(null);
+    }
 
     @Transactional
     public void saveBookWithAuthors(BookForm form) throws IOException {
@@ -82,9 +81,20 @@ public class BookService {
                 bookAuthorRepository.save(bookAuthor);
             }
         }
-
-
-
     }
+    @Transactional
+    public void addBookToCategory(Long bookId, String categoryName, Long userId) {
+
+
+        Category category = categoryRepository.findByName(categoryName);
+
+        UserBook userBooks = new UserBook();
+        userBooks.setBook(bookRepository.findById(bookId).orElse(null));
+        userBooks.setUser(userRepository.findById(userId).orElse(null));
+        userBooks.setCategory(category);
+
+        userBookRepository.save(userBooks);
+    }
+
 
 }

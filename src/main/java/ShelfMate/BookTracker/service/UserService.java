@@ -39,4 +39,20 @@ public class UserService {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
+
+    public User findUserByUsername(String username) {
+        return userRepository.findByUsername(username).orElse(null); // Or throw exception
+    }
+
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
+    }
+
+    public Long getUserIdByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Пользователь не найден"))
+                .getUserId();
+    }
+
 }

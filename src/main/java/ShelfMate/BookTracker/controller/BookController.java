@@ -3,19 +3,20 @@ package ShelfMate.BookTracker.controller;
 import ShelfMate.BookTracker.dto.BookForm;
 import ShelfMate.BookTracker.model.Author;
 import ShelfMate.BookTracker.model.Book;
+import ShelfMate.BookTracker.model.User;
 import ShelfMate.BookTracker.service.AuthorService;
 import ShelfMate.BookTracker.service.BookService;
 import ShelfMate.BookTracker.service.GenreService;
+import ShelfMate.BookTracker.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -29,6 +30,7 @@ public class BookController {
     private final BookService bookService;
     private final AuthorService authorService;
     private final GenreService genreService;
+    private final UserService userService;
 
     @GetMapping
     public String showBooks(Model model) {
@@ -70,6 +72,21 @@ public class BookController {
             return "book/bookform";
         }
 //        return "redirect:/books";
+    }
+    @GetMapping("/books/add-to-category")
+    public String addToCategory(@RequestParam Long bookId, @RequestParam String categoryName) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserName = authentication.getName(); // Get logged in username
+
+        User currentUser = userService.findUserByUsername(currentUserName);
+        if(currentUser == null){
+            throw new RuntimeException("User not found");
+        }
+
+        bookService.addBookToCategory(bookId, categoryName, currentUser.getUserId()); // Pass userId
+
+        return "redirect:/books"; // Redirect back to the books page
     }
 
 

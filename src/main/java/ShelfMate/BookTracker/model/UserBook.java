@@ -10,13 +10,17 @@ import java.time.LocalDateTime;
 @Table(name = "userbooks")
 @Data
 public class UserBook {
-    @Id
+
+    @EmbeddedId
+    private UserBookId id;
+
     @ManyToOne
+    @MapsId("user")
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Id
     @ManyToOne
+    @MapsId("book")
     @JoinColumn(name = "book_id", nullable = false)
     private Book book;
 
@@ -28,4 +32,5 @@ public class UserBook {
     @CreationTimestamp
     private LocalDateTime addedAt;
 }
+
 

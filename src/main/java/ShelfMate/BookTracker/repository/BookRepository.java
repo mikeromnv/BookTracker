@@ -16,4 +16,6 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     @Query(value = "SELECT * FROM book ORDER BY RANDOM() LIMIT :limit", nativeQuery = true)
     List<Book> findRandomBooks(@Param("limit") int limit);
+
+    Book findById(long id);
 }

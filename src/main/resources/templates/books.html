@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -58,7 +60,23 @@
 
                         <div class="book-actions">
                             <button class="btn btn-dark">Подробнее</button>
-                            <button class="btn btn-light">Хочу прочитать</button>
+<!--                            <button class="btn btn-light">Хочу прочитать</button>-->
+                            <div class="book-actions" sec:authorize="isAuthenticated()">
+                                <form th:action="@{/books/addToCategory}" method="post">
+                                    <input type="hidden" name="bookId" th:value="${book.bookId}" />
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                                            Действия
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><button class="dropdown-item" name="category" value="Хочу прочитать">Хочу прочитать</button></li>
+                                            <li><button class="dropdown-item" name="category" value="Читаю">Читаю</button></li>
+                                            <li><button class="dropdown-item" name="category" value="Прочитано">Прочитано</button></li>
+                                        </ul>
+                                    </div>
+                                </form>
+                            </div>
+
                         </div>
                     </div>
                 </div>
