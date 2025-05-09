@@ -27,7 +27,7 @@
           <div class="card mb-4">
             <div class="card-body">
               <h5 class="card-title">Цель чтения</h5>
-              <p class="card-text">65 минут уже прочитано</p>
+              <p class="card-text">25 книг уже прочитано</p>
               <div class="d-flex align-items-center">
                 <div class="progress flex-grow-1 me-3">
                   <div class="progress-bar bg-success" role="progressbar" style="width: 45%" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100"></div>
@@ -71,9 +71,9 @@
             </div>
           </div>
 
-          <!-- Список книг "Хочу прочитать" -->
+          <!-- Рекомендации -->
           <div class="card-body">
-            <h5 class="card-title">Хочу прочитать</h5>
+            <h5 class="card-title">Рекомендации</h5>
             <div th:each="book : ${random_books}" class="book-card">
               <h6 th:text="${book.title}">Название книги</h6>
               <ul>
@@ -81,6 +81,15 @@
                   <span th:text="${ba.author.authorName}">Имя автора</span>
                 </li>
               </ul>
+              <div class="book-cover-container">
+                <img th:if="${book.coverUrl != null}"
+                     th:src="@{'/images/books/' + ${book.coverUrl}}"
+                     class="book-cover"
+                     alt="Обложка книги">
+                <div th:unless="${book.coverUrl != null}" class="no-cover">
+                  <span>Нет обложки</span>
+                </div>
+              </div>
             </div>
 
           </div>

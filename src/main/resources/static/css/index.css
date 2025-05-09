@@ -1,4 +1,21 @@
+.book-cover-container {
+    height: 250px;
+    background-color: #f1f1f1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
+.book-cover {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+}
+
+.no-cover {
+    color: #6c757d;
+    font-size: 18px;
+}
 .greeting {
     font-size: 1.8rem;
     font-weight: 300;
