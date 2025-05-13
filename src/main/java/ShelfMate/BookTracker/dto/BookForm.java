@@ -14,7 +14,7 @@ public class BookForm {
     private Integer yearPublic;
     private String description;
     private Integer pageCount;
-    private transient MultipartFile coverImage;
+    private String coverImage;
     private Long genreId;
     private List<Long> authorIds;
 

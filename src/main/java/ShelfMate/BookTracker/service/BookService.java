@@ -46,41 +46,38 @@ public class BookService {
     }
 
     @Transactional
-    public void saveBookWithAuthors(BookForm form) throws IOException {
-        Book book = new Book();
-        book.setTitle(form.getTitle());
-        book.setIsbnNum(form.getIsbnNum());
-        book.setYearPublic(form.getYearPublic());
-        book.setDescription(form.getDescription());
-        book.setPageCount(form.getPageCount());
+        public void saveBookWithAuthors(BookForm form) throws IOException {
+            Book book = new Book();
+            book.setTitle(form.getTitle());
+            book.setIsbnNum(form.getIsbnNum());
+            book.setYearPublic(form.getYearPublic());
+            book.setDescription(form.getDescription());
+            book.setPageCount(form.getPageCount());
+            book.setCoverUrl(form.getCoverImage());
 
-        String coverUrl = null;
-        if (form.getCoverImage() != null && !form.getCoverImage().isEmpty()) {
-            coverUrl = fileStorageService.storeFile(form.getCoverImage());
-        }
 
-        book.setCoverUrl(coverUrl);
-
-        if (form.getGenreId() != null) {
-            Genre genre = genreRepository.findById(form.getGenreId())
-                    .orElseThrow(() -> new RuntimeException("Жанр не найден"));
-            book.setGenre(genre);
-        }
-
-        Book savedBook = bookRepository.save(book);
-
-        if (form.getAuthorIds() != null && !form.getAuthorIds().isEmpty()) {
-            for (Long authorId : form.getAuthorIds()) {
-                Author author = authorRepository.findById(authorId)
-                        .orElseThrow(() -> new RuntimeException("Автор не найден"));
-
-                // Создаем и сохраняем связь
-                BookAuthor bookAuthor = new BookAuthor();
-                bookAuthor.setBook(savedBook);
-                bookAuthor.setAuthor(author);
-                bookAuthorRepository.save(bookAuthor);
+            if (form.getGenreId() != null) {
+                Genre genre = genreRepository.findById(form.getGenreId())
+                        .orElseThrow(() -> new RuntimeException("Жанр не найден"));
+                book.setGenre(genre);
             }
-        }
+
+            Book savedBook = bookRepository.save(book);
+
+            if (form.getAuthorIds() != null && !form.getAuthorIds().isEmpty()) {
+                for (Long authorId : form.getAuthorIds()) {
+                    Author author = authorRepository.findById(authorId)
+                            .orElseThrow(() -> new RuntimeException("Автор не найден"));
+
+                    BookAuthor bookAuthor = new BookAuthor();
+                    BookAuthorId bookAuthorId = new BookAuthorId(savedBook.getBookId(), author.getAuthorId());
+                    bookAuthor.setId(bookAuthorId);
+                    bookAuthor.setBook(savedBook);
+                    bookAuthor.setAuthor(author);
+
+                    bookAuthorRepository.save(bookAuthor);
+                }
+            }
     }
     @Transactional
     public void addBookToCategory(Long bookId, String categoryName, Long userId) {

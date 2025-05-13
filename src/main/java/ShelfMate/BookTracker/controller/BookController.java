@@ -17,8 +17,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 @Controller
@@ -48,9 +53,11 @@ public class BookController {
         model.addAttribute("genres", genreService.getAllGenres());
         return "book/bookform"; // путь к шаблону
     }
+
     @PostMapping("/add")
     public String saveBook(
             @ModelAttribute("bookForm") @Valid BookForm bookForm,
+            @RequestParam("imageFile") MultipartFile imageFile,
             BindingResult result,
             Model model) throws IOException {
         log.info("Получены данные: {}", bookForm);
@@ -62,6 +69,19 @@ public class BookController {
         }
 
         try {
+            // Сохраняем изображение
+            if (!imageFile.isEmpty()) {
+                String fileName = imageFile.getOriginalFilename();
+                Path uploadDir = Paths.get("src/main/resources/static/images/books");
+
+                if (!Files.exists(uploadDir)) {
+                    Files.createDirectories(uploadDir);
+                }
+
+                Path filePath = uploadDir.resolve(fileName);
+                Files.copy(imageFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+                bookForm.setCoverImage(fileName);
+            }
             bookService.saveBookWithAuthors(bookForm);
             return "redirect:/books?success";
         } catch (Exception e) {

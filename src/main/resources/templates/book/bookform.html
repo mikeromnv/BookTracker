@@ -18,7 +18,7 @@
             <div class="add-book-form mb-5">
                 <h2>Добавить новую книгу</h2>
                 <div class="book-form">
-                    <form th:action="@{/books/add}" th:object="${bookForm}" method="post">
+                    <form th:action="@{/books/add}" th:object="${bookForm}" method="post" enctype="multipart/form-data">
                         <!-- Название -->
                         <div class="mb-3">
                             <label for="title" class="form-label">Название книги</label>
@@ -50,8 +50,8 @@
                                 <input type="number" class="form-control" id="pageCount" th:field="*{pageCount}">
                             </div>
                             <div class="mb-3">
-                                <label for="cover" class="form-label">Обложка</label>
-                                <input type="file" class="form-control" id="cover" name="coverImage">
+                                <label for="imageFile" class="form-label">Обложка</label>
+                                <input type="file" class="form-control" id="imageFile" name="imageFile" accept="image/*">
                             </div>
                         </div>
 
