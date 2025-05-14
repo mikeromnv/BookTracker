@@ -62,19 +62,33 @@
                             <button class="btn btn-dark">Подробнее</button>
 <!--                            <button class="btn btn-light">Хочу прочитать</button>-->
                             <div class="book-actions" sec:authorize="isAuthenticated()">
-                                <form th:action="@{/books/addToCategory}" method="post">
-                                    <input type="hidden" name="bookId" th:value="${book.bookId}" />
+                                <form th:action="@{/books/addToCategory}" method="post" id="categoryForm">
+                                    <input type="hidden" name="bookId" th:value="${book.bookId}">
+                                    <input type="hidden" name="categoryName" id="categoryInput">
+
                                     <div class="btn-group">
                                         <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
                                             Действия
                                         </button>
                                         <ul class="dropdown-menu">
-                                            <li><button class="dropdown-item" name="category" value="Хочу прочитать">Хочу прочитать</button></li>
-                                            <li><button class="dropdown-item" name="category" value="Читаю">Читаю</button></li>
-                                            <li><button class="dropdown-item" name="category" value="Прочитано">Прочитано</button></li>
+                                            <li th:each="category : ${categories}">
+                                                <button class="dropdown-item"
+                                                        type="submit"
+                                                        name="categoryName"
+                                                        th:value="${category.name}"
+                                                        th:text="${category.name}">
+                                                </button>
+                                            </li>
                                         </ul>
                                     </div>
                                 </form>
+
+                                <script>
+                                    function setCategory(category) {
+                                        document.getElementById('categoryInput').value = category.trim();
+                                        document.getElementById('categoryForm').submit();
+                                    }
+                                </script>
                             </div>
 
                         </div>

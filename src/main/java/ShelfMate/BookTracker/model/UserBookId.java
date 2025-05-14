@@ -2,13 +2,17 @@ package ShelfMate.BookTracker.model;
 
 
 import jakarta.persistence.Embeddable;
-import lombok.Data;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
 @Data
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserBookId implements Serializable {
     private Long user;
     private Long book;

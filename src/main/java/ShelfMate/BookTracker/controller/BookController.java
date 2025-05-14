@@ -3,11 +3,9 @@ package ShelfMate.BookTracker.controller;
 import ShelfMate.BookTracker.dto.BookForm;
 import ShelfMate.BookTracker.model.Author;
 import ShelfMate.BookTracker.model.Book;
+import ShelfMate.BookTracker.model.Category;
 import ShelfMate.BookTracker.model.User;
-import ShelfMate.BookTracker.service.AuthorService;
-import ShelfMate.BookTracker.service.BookService;
-import ShelfMate.BookTracker.service.GenreService;
-import ShelfMate.BookTracker.service.UserService;
+import ShelfMate.BookTracker.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,11 +34,14 @@ public class BookController {
     private final AuthorService authorService;
     private final GenreService genreService;
     private final UserService userService;
+    private final CategoryService categoryService;
 
     @GetMapping
     public String showBooks(Model model) {
         List<Book> books = bookService.getAllBooks();
         List<Author> authors = authorService.getAllAuthors();
+        List<Category> categories = categoryService.getAllCategories();
+        model.addAttribute("categories", categories);
         model.addAttribute("books", books);
         model.addAttribute("authors", authors);
         return "books";
@@ -93,20 +94,25 @@ public class BookController {
         }
 //        return "redirect:/books";
     }
-    @GetMapping("/books/add-to-category")
-    public String addToCategory(@RequestParam Long bookId, @RequestParam String categoryName) {
+    @PostMapping("/addToCategory")
+    public String addToCategory(
+            @RequestParam Long bookId,
+            @RequestParam String categoryName,
+            Authentication authentication) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUserName = authentication.getName(); // Get logged in username
+        try {
+            String userEmail = authentication.getName();
+            log.info("Adding book to category for user: {}", userEmail);
 
-        User currentUser = userService.findUserByUsername(currentUserName);
-        if(currentUser == null){
-            throw new RuntimeException("User not found");
+            User currentUser = userService.getByEmail(userEmail);
+
+            bookService.addBookToCategory(bookId, categoryName, currentUser.getUserId());
+            return "redirect:/books?success";
+
+        } catch (Exception e) {
+            log.error("Error adding book to category", e);
+            return "redirect:/books?error=" + e.getMessage();
         }
-
-        bookService.addBookToCategory(bookId, categoryName, currentUser.getUserId()); // Pass userId
-
-        return "redirect:/books"; // Redirect back to the books page
     }
 
 

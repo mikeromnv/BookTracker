@@ -81,16 +81,23 @@ public class BookService {
     }
     @Transactional
     public void addBookToCategory(Long bookId, String categoryName, Long userId) {
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new RuntimeException("Book not found"));
 
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        Category category = categoryRepository.findByName(categoryName);
+        String cleanedCategoryName = categoryName.trim().replaceAll("^[,\\s]+", "");
+        Category category = categoryRepository.findByName(cleanedCategoryName);
 
-        UserBook userBooks = new UserBook();
-        userBooks.setBook(bookRepository.findById(bookId).orElse(null));
-        userBooks.setUser(userRepository.findById(userId).orElse(null));
-        userBooks.setCategory(category);
+        UserBook userBook = new UserBook();
+        UserBookId userBookId = new UserBookId(userId, bookId); // составной ключ
+        userBook.setId(userBookId);
+        userBook.setBook(book);
+        userBook.setUser(user);
+        userBook.setCategory(category);
 
-        userBookRepository.save(userBooks);
+        userBookRepository.save(userBook);
     }
 
 

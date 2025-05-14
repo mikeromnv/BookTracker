@@ -37,12 +37,13 @@ public class UserService {
 
     public User getByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
     }
 
     public User findUserByUsername(String username) {
         return userRepository.findByUsername(username).orElse(null); // Or throw exception
     }
+
 
     public User getUserById(Long userId) {
         return userRepository.findById(userId)
