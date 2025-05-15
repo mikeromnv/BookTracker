@@ -52,12 +52,14 @@ public class SecurityConfig {
                                 "books/bookform",
                                 "/authors/",
                                 "/authors/new",
-                                "/authors/add"
+                                "/authors/add",
+                                "/profile"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")  // Обновленный путь
+                        .defaultSuccessUrl("/profile")
                         .loginProcessingUrl("/login")  // URL для обработки формы
                         .usernameParameter("email") // Явно указываем параметр email
                         .defaultSuccessUrl("/", true)
