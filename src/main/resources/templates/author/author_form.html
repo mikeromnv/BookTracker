@@ -16,6 +16,18 @@
         <div th:replace="fragments/navbar :: sidebar"></div>
 
         <main class="container col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+
+            <!-- Добавьте в начало main -->
+            <div th:if="${param.error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <span th:text="${param.error}">Ошибка</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <div th:if="${param.authorSuccess}" class="alert alert-success alert-dismissible fade show" role="alert">
+                Автор успешно добавлен!
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                 <h1 class="h2">Добавить нового автора</h1>
             </div>
@@ -25,19 +37,26 @@
                     <!-- ФИО автора -->
                     <div class="mb-3">
                         <label for="authorName" class="form-label">ФИО автора</label>
-                        <input type="text" class="form-control" id="authorName" th:field="*{authorName}" required>
+                        <input type="text" class="form-control" id="authorName"
+                               th:field="*{authorName}" required
+                               minlength="2" maxlength="100">
+                        <div class="invalid-feedback">
+                            Пожалуйста, введите имя автора (от 2 до 100 символов)
+                        </div>
                     </div>
 
                     <!-- Биография -->
                     <div class="mb-4">
                         <label for="bio" class="form-label">Биография</label>
-                        <textarea class="form-control" id="bio" th:field="*{bio}" rows="6"></textarea>
+                        <textarea class="form-control" id="bio"
+                                  th:field="*{bio}" rows="6"
+                                  maxlength="2000"></textarea>
                     </div>
 
                     <!-- Кнопки -->
                     <div class="d-flex justify-content-between align-items-center">
                         <button type="submit" class="btn btn-primary btn-submit">Добавить автора</button>
-                        <a href="/books/new" class="btn btn-outline-secondary back-link">Назад к созданию книги</a>
+                        <a th:href="@{/books/bookform}" class="btn btn-outline-secondary back-link">Назад к созданию книги</a>
                     </div>
                 </form>
             </div>

@@ -150,6 +150,22 @@ body {
     color: #6c757d;
 }
 
+.book-card.reading {
+    border-left: 5px solid #0d6efd; /* синий */
+    background-color: #e7f1ff;
+}
+
+.book-card.want-to-read {
+    border-left: 5px solid #ffc107; /* жёлтый */
+    background-color: #fff8e1;
+}
+
+.book-card.finished {
+    border-left: 5px solid #198754; /* зелёный */
+    background-color: #e6f4ea;
+}
+
+
 /* Адаптивность */
 @media (max-width: 768px) {
     .controls {

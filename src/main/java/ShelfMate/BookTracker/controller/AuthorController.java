@@ -3,6 +3,7 @@ package ShelfMate.BookTracker.controller;
 
 import ShelfMate.BookTracker.model.Author;
 import ShelfMate.BookTracker.repository.AuthorRepository;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/authors")
+@Data
 public class AuthorController {
 
     @Autowired
@@ -26,8 +28,12 @@ public class AuthorController {
 
     @PostMapping("/add")
     public String saveAuthor(@ModelAttribute("author") Author author) {
-        authorRepository.save(author);
-        return "redirect:/books/new"; // возвращаемся к форме книги
+        try {
+            authorRepository.save(author);
+            return "redirect:/books/bookform?authorSuccess";
+        } catch (Exception e) {
+            return "redirect:/authors/new?error=" + e.getMessage();
+        }
     }
 
 }

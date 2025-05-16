@@ -8,14 +8,16 @@ import java.util.List;
 
 @Entity
 @Data
+@Table(name = "author")
 public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long authorId;
 
-    @Column(nullable = false, length = 100)
+    @Column(name = "author_name", nullable = false, length = 100)
     private String authorName;
 
+    @Column(length = 2000)
     private String bio;
 
     @OneToMany(mappedBy = "author")

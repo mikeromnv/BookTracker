@@ -23,6 +23,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/books")
@@ -35,15 +37,29 @@ public class BookController {
     private final GenreService genreService;
     private final UserService userService;
     private final CategoryService categoryService;
+    private final UserBookService userBookService;
 
     @GetMapping
-    public String showBooks(Model model) {
+    public String showBooks(Model model, Authentication authentication) {
         List<Book> books = bookService.getAllBooks();
+        String email = authentication.getName();
+        User user = userService.getByEmail(email);
+
+        Map<Category, List<Book>> booksByCategory = userBookService.getUserBooksGroupedByCategory(user.getUserId());
+// Новый маппинг: bookId -> categoryName
+        Map<Long, String> userBookCategories = booksByCategory.entrySet().stream()
+                .flatMap(entry -> entry.getValue().stream()
+                        .map(book -> Map.entry(book.getBookId(), entry.getKey().getName())))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+
         List<Author> authors = authorService.getAllAuthors();
         List<Category> categories = categoryService.getAllCategories();
         model.addAttribute("categories", categories);
         model.addAttribute("books", books);
         model.addAttribute("authors", authors);
+        model.addAttribute("booksByCategory", booksByCategory);
+        model.addAttribute("userBookCategories", userBookCategories);
         return "books";
     }
 

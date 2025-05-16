@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
     <link rel="stylesheet" th:href="@{/css/navbar.css}">
 </head>
-<body>
+<body th:classappend="${not #authorization.expression('isAuthenticated()')} ? 'unauth' : ''">
 <div class="container-fluid">
     <div class="row">
         <!-- Боковая панель -->
@@ -34,7 +34,19 @@
             </div>
             <a th:href="@{books/bookform}" class="btn btn-primary mb-3">Добавить книгу</a>
             <div class="container books-grid col-md-9">
-                <div th:each="book : ${books}" class="book-card">
+                <div th:each="book : ${books}" class="book-card"
+                     th:classappend="${isAuthenticated} ?
+                    ${userBookCategories.get(book.bookId) == 'Читаю' ? 'reading' :
+                     userBookCategories.get(book.bookId) == 'Хочу прочитать' ? 'want-to-read' :
+                     userBookCategories.get(book.bookId) == 'Прочитано' ? 'finished' : ''} : ''">
+
+                    <!-- Бейдж категории (только для авторизованных) -->
+                    <div sec:authorize="isAuthenticated()"
+                         th:if="${userBookCategories.get(book.bookId)}"
+                         class="category-badge"
+                         th:text="${userBookCategories.get(book.bookId)}">
+                    </div>
+
                     <div class="book-cover-container">
                         <img th:if="${book.coverUrl != null}"
                              th:src="@{'/images/books/' + ${book.coverUrl}}"
@@ -61,7 +73,6 @@
 
                         <div class="book-actions">
                             <button class="btn btn-dark">Подробнее</button>
-<!--                            <button class="btn btn-light">Хочу прочитать</button>-->
                             <div class="book-actions" sec:authorize="isAuthenticated()">
                                 <form th:action="@{/books/addToCategory}" method="post" id="categoryForm">
                                     <input type="hidden" name="bookId" th:value="${book.bookId}">

@@ -100,5 +100,12 @@ public class BookService {
         userBookRepository.save(userBook);
     }
 
+    public Map<Long, String> getUserBookCategories(Long userId) {
+        return userBookRepository.findBookCategoriesByUserId(userId).stream()
+                .collect(Collectors.toMap(
+                        arr -> (Long) arr[0],  // bookId
+                        arr -> (String) arr[1] // category.name
+                ));
+    }
 
 }
