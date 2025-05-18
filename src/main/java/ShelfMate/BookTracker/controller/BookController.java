@@ -42,24 +42,27 @@ public class BookController {
     @GetMapping
     public String showBooks(Model model, Authentication authentication) {
         List<Book> books = bookService.getAllBooks();
-        String email = authentication.getName();
-        User user = userService.getByEmail(email);
 
-        Map<Category, List<Book>> booksByCategory = userBookService.getUserBooksGroupedByCategory(user.getUserId());
+        if (authentication!= null) {
+            String email = authentication.getName();
+            User user = userService.getByEmail(email);
+            Map<Category, List<Book>> booksByCategory = userBookService.getUserBooksGroupedByCategory(user.getUserId());
 // Новый маппинг: bookId -> categoryName
-        Map<Long, String> userBookCategories = booksByCategory.entrySet().stream()
-                .flatMap(entry -> entry.getValue().stream()
-                        .map(book -> Map.entry(book.getBookId(), entry.getKey().getName())))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            Map<Long, String> userBookCategories = booksByCategory.entrySet().stream()
+                    .flatMap(entry -> entry.getValue().stream()
+                            .map(book -> Map.entry(book.getBookId(), entry.getKey().getName())))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            model.addAttribute("booksByCategory", booksByCategory);
+            model.addAttribute("userBookCategories", userBookCategories);
 
+        }
 
         List<Author> authors = authorService.getAllAuthors();
         List<Category> categories = categoryService.getAllCategories();
         model.addAttribute("categories", categories);
         model.addAttribute("books", books);
         model.addAttribute("authors", authors);
-        model.addAttribute("booksByCategory", booksByCategory);
-        model.addAttribute("userBookCategories", userBookCategories);
+        model.addAttribute("isAuthenticated", authentication != null && authentication.isAuthenticated());
         return "books";
     }
 

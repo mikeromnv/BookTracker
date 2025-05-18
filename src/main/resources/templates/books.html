@@ -35,11 +35,11 @@
             <a th:href="@{books/bookform}" class="btn btn-primary mb-3">Добавить книгу</a>
             <div class="container books-grid col-md-9">
                 <div th:each="book : ${books}" class="book-card"
-                     th:classappend="${isAuthenticated} ?
-                    ${userBookCategories.get(book.bookId) == 'Читаю' ? 'reading' :
-                     userBookCategories.get(book.bookId) == 'Хочу прочитать' ? 'want-to-read' :
-                     userBookCategories.get(book.bookId) == 'Прочитано' ? 'finished' : ''} : ''">
-
+                     th:classappend="${isAuthenticated && userBookCategories != null} ?
+                    ${userBookCategories.containsKey(book.bookId) ?
+                     (userBookCategories.get(book.bookId) == 'Читаю сейчас' ? 'reading' :
+                      userBookCategories.get(book.bookId) == 'Хочу прочитать' ? 'want-to-read' :
+                      userBookCategories.get(book.bookId) == 'Прочитано' ? 'finished' : '') : ''} : ''">
                     <!-- Бейдж категории (только для авторизованных) -->
                     <div sec:authorize="isAuthenticated()"
                          th:if="${userBookCategories.get(book.bookId)}"
