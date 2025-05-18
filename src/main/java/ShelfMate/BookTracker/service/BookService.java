@@ -108,4 +108,10 @@ public class BookService {
                 ));
     }
 
+
+    @Transactional
+    public void removeBookFromCategory(Long bookId, Long userId) {
+        userBookRepository.deleteByBookBookIdAndUserId(bookId, userId);
+    }
+
 }

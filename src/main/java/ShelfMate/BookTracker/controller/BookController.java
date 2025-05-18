@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -133,7 +134,20 @@ public class BookController {
             return "redirect:/books?error=" + e.getMessage();
         }
     }
+    @PostMapping("/removeFromCategory")
+    public String removeFromCategory(
+            @RequestParam Long bookId,
+            Authentication authentication,
+            RedirectAttributes redirectAttributes) {
 
+        if (authentication != null && authentication.isAuthenticated()) {
+            User user = userService.getByEmail(authentication.getName());
+            bookService.removeBookFromCategory(bookId, user.getUserId());
+            redirectAttributes.addFlashAttribute("success", "Книга удалена из категории");
+        }
+
+        return "redirect:/books";
+    }
 
 
 
