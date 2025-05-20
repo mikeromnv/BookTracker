@@ -82,7 +82,11 @@
                                 Подробнее
                             </button>
                             <div class="book-actions" sec:authorize="isAuthenticated()">
-
+<!--                                <a th:href="@{/books/{id}/reviews(id=${book.bookId})}"-->
+<!--                                   class="btn btn-outline-info"-->
+<!--                                title="Отзывы">-->
+<!--                                    <i class="bi bi-chat-left-text"></i>-->
+<!--                                </a>-->
 
 
                                 <form th:action="@{/books/addToCategory}" method="post" id="categoryForm">

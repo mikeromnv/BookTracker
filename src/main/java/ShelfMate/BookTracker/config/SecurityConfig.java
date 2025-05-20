@@ -2,6 +2,7 @@ package ShelfMate.BookTracker.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -44,7 +45,6 @@ public class SecurityConfig {
                                 "/home",
                                 "/register",
                                 "/login",
-                                "/css/**",
                                 "/profile",
                                 "/books",
                                 "/books/**",
@@ -54,22 +54,22 @@ public class SecurityConfig {
                                 "/authors/",
                                 "/authors/new",
                                 "/authors/add",
-                                "/profile"
+                                "/allreviews"
                         ).permitAll()
+
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/login")  // Обновленный путь
-                        .defaultSuccessUrl("/profile")
-                        .loginProcessingUrl("/login")  // URL для обработки формы
-                        .usernameParameter("email") // Явно указываем параметр email
-                        .defaultSuccessUrl("/", true)
-                        .failureUrl("/login?error=true")  // Путь с /
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/profile", true)
+                        .loginProcessingUrl("/login")
+                        .usernameParameter("email")
+                        .failureUrl("/login?error=true")
                         .permitAll()
                 )
                 .logout(logout -> logout
+                        .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout")
-                        .logoutSuccessUrl("/")
                         .permitAll()
                 )
                 .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"));

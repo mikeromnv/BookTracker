@@ -1,6 +1,7 @@
 package ShelfMate.BookTracker.controller;
 
 import ShelfMate.BookTracker.dto.BookForm;
+import ShelfMate.BookTracker.dto.BookWithRatingDTO;
 import ShelfMate.BookTracker.model.Author;
 import ShelfMate.BookTracker.model.Book;
 import ShelfMate.BookTracker.model.Category;
@@ -39,6 +40,7 @@ public class BookController {
     private final UserService userService;
     private final CategoryService categoryService;
     private final UserBookService userBookService;
+    private final ReviewService reviewService;
 
     @GetMapping
     public String showBooks(Model model, Authentication authentication) {
@@ -57,7 +59,13 @@ public class BookController {
             model.addAttribute("userBookCategories", userBookCategories);
 
         }
-
+        List<BookWithRatingDTO> booksWithRatings = books.stream()
+                .map(book -> {
+                    Double avgRating = reviewService.getBookAverageRating(book.getBookId());
+                    Integer reviewCount = reviewService.getReviewCount(book.getBookId());
+                    return new BookWithRatingDTO(book, avgRating, reviewCount);
+                })
+                .collect(Collectors.toList());
         List<Author> authors = authorService.getAllAuthors();
         List<Category> categories = categoryService.getAllCategories();
         model.addAttribute("categories", categories);

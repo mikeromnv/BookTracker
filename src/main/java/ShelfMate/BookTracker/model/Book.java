@@ -53,4 +53,7 @@ public class Book {
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BookAuthor> bookAuthors = new ArrayList<>();
 
+    @Transient // Не сохраняется в БД
+    private Long reviewCount;
+
 }
