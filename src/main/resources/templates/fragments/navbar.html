@@ -16,7 +16,7 @@
         <h4 class="text-center mb-4">ShelfMate</h4>
         <ul class="nav flex-column">
             <li class="nav-item">
-                <a class="nav-link text-white" th:href="@{/index}">
+                <a class="nav-link text-white" th:href="@{/}">
                     <i class="bi bi-house-door me-2"></i> Главная
                 </a>
             </li>
@@ -26,7 +26,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white" th:href="@{/}">
+                <a class="nav-link text-white" th:href="@{/authors}">
                     <i class="bi bi-people me-2"></i> Авторы
                 </a>
             </li>
@@ -41,8 +41,8 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white" th:href="@{/settings}">
-                    <i class="bi bi-gear me-2"></i> Настройки
+                <a class="nav-link" th:href="@{/settings}" sec:authorize="isAuthenticated()">
+                    <i class="bi bi-gear"></i> Настройки
                 </a>
             </li>
             <li class="nav-item">

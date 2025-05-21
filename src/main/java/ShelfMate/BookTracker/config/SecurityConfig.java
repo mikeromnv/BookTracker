@@ -54,7 +54,9 @@ public class SecurityConfig {
                                 "/authors/",
                                 "/authors/new",
                                 "/authors/add",
-                                "/allreviews"
+                                "/allreviews",
+                                "/quotes",
+                                "/settings/**"
                         ).permitAll()
 
                         .anyRequest().authenticated()

@@ -1,6 +1,7 @@
 package ShelfMate.BookTracker.repository;
 
 import ShelfMate.BookTracker.model.GoalProgress;
+import ShelfMate.BookTracker.model.User;
 import ShelfMate.BookTracker.model.UserGoal;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -30,5 +31,9 @@ public interface GoalRepository extends JpaRepository<UserGoal, Long> {
     @Query("SELECT COUNT(ub) FROM UserBook ub WHERE ub.user.userId = :userId AND ub.category.name = 'Прочитано'")
     int countReadBooks(@Param("userId") Long userId);
 
+    @Query("SELECT ug FROM UserGoal ug JOIN ug.goalType gt WHERE ug.user = :user AND gt.name = :goalTypeName")
+    Optional<UserGoal> findByUserAndGoalTypeName(@Param("user") User user, @Param("goalTypeName") String goalTypeName);
 
+    @Query("SELECT ug FROM UserGoal ug WHERE ug.user = :user AND ug.goalType.typeId = :goalTypeId")
+    Optional<UserGoal> findByUserAndGoalType(@Param("user") User user, @Param("goalTypeId") Long goalTypeId);
 }

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Настройки профиля</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css" />
+    <link rel="stylesheet" th:href="@{/css/navbar.css}" />
+    <link rel="stylesheet" th:href="@{/css/settings.css}" />
+</head>
+<body>
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Боковая панель -->
+        <div th:replace="fragments/navbar :: sidebar"></div>
+
+        <!-- Основное содержимое -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+            <div class="container">
+                <h2 class="mb-4 text-center">Настройки профиля</h2>
+
+                <!-- Сообщения об успехе/ошибке -->
+                <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+                <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+                <!-- Форма профиля -->
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-header bg-white border-bottom">
+                        <h5 class="mb-0">Основная информация</h5>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/settings/profile}" method="post" th:object="${user}">
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Имя пользователя</label>
+                                <input id="username" type="text" class="form-control" th:field="*{username}" required />
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input id="email" type="email" class="form-control" th:field="*{email}" required />
+                            </div>
+                            <button type="submit" class="btn btn-primary">Сохранить</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Форма цели чтения -->
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white border-bottom">
+                        <h5 class="mb-0">Цель чтения на год</h5>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/settings/goal}" method="post">
+                            <div class="mb-3">
+                                <label for="targetValue" class="form-label">Количество книг</label>
+                                <input id="targetValue" type="number" class="form-control" name="targetValue"
+                                       th:value="${goal.targetValue ?: 0}" min="1" required />
+                            </div>
+                            <div class="mb-3">
+                                <label for="deadline" class="form-label">Дата завершения</label>
+                                <input id="deadline" type="date" class="form-control" name="deadline"
+                                       th:value="${goal.deadline ?: T(java.time.LocalDate).now().plusYears(1)}" required />
+                            </div>
+                            <div class="progress mb-3" th:if="${goal.goalId != null}">
+                                <div class="progress-bar" role="progressbar"
+                                     th:style="'width: ' + (${goal.progressValue} * 100 / ${goal.targetValue}) + '%'"
+                                     th:text="${goal.progressValue} + '/' + ${goal.targetValue}"></div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <span th:text="${goal.goalId != null} ? 'Обновить цель' : 'Установить цель'"></span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
