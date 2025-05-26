@@ -33,6 +33,7 @@
                 </header>
             </div>
             <a th:href="@{books/bookform}" class="btn btn-primary mb-3">Добавить книгу</a>
+
             <div class="container books-grid col-md-9">
                 <div th:each="book : ${books}" class="book-card"
                      th:classappend="${isAuthenticated && userBookCategories != null} ?
@@ -82,12 +83,6 @@
                                 Подробнее
                             </button>
                             <div class="book-actions" sec:authorize="isAuthenticated()">
-<!--                                <a th:href="@{/books/{id}/reviews(id=${book.bookId})}"-->
-<!--                                   class="btn btn-outline-info"-->
-<!--                                title="Отзывы">-->
-<!--                                    <i class="bi bi-chat-left-text"></i>-->
-<!--                                </a>-->
-
 
                                 <form th:action="@{/books/addToCategory}" method="post" id="categoryForm">
                                     <input type="hidden" name="bookId" th:value="${book.bookId}">

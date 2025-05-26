@@ -46,12 +46,26 @@ public class UserSettingsController {
             return "settings";
         }
 
-        User currentUser = userService.getByEmail(authentication.getName());
-        currentUser.setUsername(user.getUsername());
-        currentUser.setEmail(user.getEmail());
+        try {
+            User currentUser = userService.getByEmail(authentication.getName());
 
-        userService.updateUser(currentUser);
-        redirectAttributes.addFlashAttribute("success", "Профиль успешно обновлен");
+            // Проверяем, меняется ли email
+            if (!currentUser.getEmail().equals(user.getEmail())) {
+                if (userService.emailExists(user.getEmail())) {
+                    redirectAttributes.addFlashAttribute("error", "Email уже используется");
+                    return "redirect:/settings";
+                }
+            }
+
+            currentUser.setUsername(user.getUsername());
+            currentUser.setEmail(user.getEmail());
+
+            userService.updateUser(currentUser);
+            redirectAttributes.addFlashAttribute("success", "Профиль успешно обновлен");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Ошибка при обновлении профиля: " + e.getMessage());
+        }
+
         return "redirect:/settings";
     }
 

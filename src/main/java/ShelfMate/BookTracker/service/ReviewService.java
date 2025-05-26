@@ -51,6 +51,22 @@ public class ReviewService {
     }
 
 
+    public Review getReviewById(Long id) {
+        return reviewRepository.findById(id).orElseThrow(() -> new RuntimeException("Review not found"));
+    }
+
+    public void updateReview(Long id, Review updatedReview) {
+        Review existing = getReviewById(id);
+        existing.setRating(updatedReview.getRating());
+        existing.setReviewText(updatedReview.getReviewText());
+        reviewRepository.save(existing);
+    }
+
+    public void deleteReview(Long id) {
+        reviewRepository.deleteById(id);
+    }
+
+
     public Page<Review> getAllReviews(Long bookId, Long userId, Integer minRating, int page, int size) {
         Specification<Review> spec = Specification.where(null);
 

@@ -39,4 +39,7 @@ public class Review {
     @Column(name = "updated_at")
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    @Transient // Не сохраняется в БД
+    private Boolean isNew = false;
 }

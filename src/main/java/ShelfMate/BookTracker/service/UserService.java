@@ -60,12 +60,21 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("Пользователь не найден"))
                 .getUserId();
     }
-    public void updateUser(User user) {
-        // Проверяем уникальность email
-        if (userRepository.existsByEmail(user.getEmail())) {
-            throw new IllegalArgumentException("Email уже используется");
+
+    public void updateUser(User updatedUser) {
+        User existingUser = userRepository.findById(updatedUser.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("Пользователь не найден"));
+
+        // Проверяем уникальность email (если он изменился)
+        if (!existingUser.getEmail().equals(updatedUser.getEmail())) {
+            if (userRepository.existsByEmail(updatedUser.getEmail())) {
+                throw new IllegalArgumentException("Email уже используется другим пользователем");
+            }
         }
 
-        userRepository.save(user);
+        existingUser.setUsername(updatedUser.getUsername());
+        existingUser.setEmail(updatedUser.getEmail());
+
+        userRepository.save(existingUser);
     }
 }
