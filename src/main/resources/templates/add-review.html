@@ -48,9 +48,10 @@
     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
       <div class="mb-4">
         <label for="bookSelect" class="form-label fw-bold">Книга</label>
-        <select class="form-select form-select-lg" id="bookSelect" name="bookId" required
+        <select class="form-select form-select-lg" id="bookSelect" th:field="*{book.bookId}" required
                 th:disabled="${review.isNew == false}">
-          <option value="" disabled selected>Выберите книгу</option>
+
+        <option value="" disabled selected>Выберите книгу</option>
           <option th:each="b : ${books}"
                   th:value="${b.bookId}"
                   th:text="${b.title}"

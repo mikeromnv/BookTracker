@@ -32,6 +32,7 @@ public class BookService {
     private final BookAuthorRepository bookAuthorRepository;
     private final CategoryService categoryRepository;
     private final UserBookRepository userBookRepository;
+    private final BookProgressRepository bookProgressRepository;
     @Autowired
     private UserRepository userRepository;
 
@@ -54,7 +55,7 @@ public class BookService {
             book.setDescription(form.getDescription());
             book.setPageCount(form.getPageCount());
             book.setCoverUrl(form.getCoverImage());
-
+            book.setOwner(form.getOwner());
 
             if (form.getGenreId() != null) {
                 Genre genre = genreRepository.findById(form.getGenreId())
@@ -79,6 +80,7 @@ public class BookService {
                 }
             }
     }
+
     @Transactional
     public void addBookToCategory(Long bookId, String categoryName, Long userId) {
         Book book = bookRepository.findById(bookId)
@@ -96,6 +98,16 @@ public class BookService {
         userBook.setBook(book);
         userBook.setUser(user);
         userBook.setCategory(category);
+        //System.out.println(categoryName + "\n" + (categoryName.equalsIgnoreCase("Читаю сейчас")) + "\n");
+
+        if (cleanedCategoryName.equalsIgnoreCase("Читаю сейчас")){
+            BookProgress bookProgress = new BookProgress();
+            bookProgress.setBook(book);
+            bookProgress.setUser(user);
+            bookProgress.setCurrentPage(0);
+            bookProgress.setTotalPages(book.getPageCount());
+            bookProgressRepository.save(bookProgress);
+        }
 
         userBookRepository.save(userBook);
     }
@@ -111,7 +123,28 @@ public class BookService {
 
     @Transactional
     public void removeBookFromCategory(Long bookId, Long userId) {
+
         userBookRepository.deleteByBookBookIdAndUserId(bookId, userId);
+
+        try{
+            Book book = bookRepository.findById(bookId)
+                    .orElseThrow(() -> new RuntimeException("Book not found"));
+
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+            BookProgress bookProgress = bookProgressRepository.findByUserAndBook(user, book)
+                    .orElseThrow(() -> new RuntimeException("BookProgress not found"));
+            bookProgressRepository.delete(bookProgress);
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Transactional
+    public void deleteBook(Book book) {
+        bookRepository.delete(book);
     }
 
 }

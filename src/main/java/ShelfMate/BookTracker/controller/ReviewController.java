@@ -83,24 +83,20 @@ public class ReviewController {
     }
 
     @PostMapping("/save-review")
-    public String saveReview(@RequestParam Long bookId,
-                             @RequestParam @Min(1) @Max(10) int rating,
-                             @RequestParam @NotBlank String review,
+    public String saveReview(@ModelAttribute("review") Review review,
                              Authentication authentication,
                              RedirectAttributes redirectAttributes) {
 
         try {
             User user = userService.getByEmail(authentication.getName());
-            Book book = bookService.getBookById(bookId);
+            Book book = bookService.getBookById(review.getBook().getBookId());
 
-            Review newReview = new Review();
-            newReview.setUser(user);
-            newReview.setBook(book);
-            newReview.setRating(rating);
-            newReview.setReviewText(review);
-            newReview.setCreatedAt(LocalDateTime.now());
-            newReview.setIsNew(false);
-            reviewRepository.save(newReview);
+            review.setUser(user);
+            review.setBook(book);
+            review.setCreatedAt(LocalDateTime.now());
+            review.setIsNew(false);
+
+            reviewRepository.save(review);
 
             redirectAttributes.addFlashAttribute("success", "Отзыв успешно сохранен!");
             return "redirect:/allreviews";

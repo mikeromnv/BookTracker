@@ -1,5 +1,6 @@
 package ShelfMate.BookTracker.dto;
 
+import ShelfMate.BookTracker.model.User;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,5 +18,5 @@ public class BookForm {
     private String coverImage;
     private Long genreId;
     private List<Long> authorIds;
-
+    private User owner;
 }

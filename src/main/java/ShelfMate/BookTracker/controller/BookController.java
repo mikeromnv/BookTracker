@@ -2,16 +2,17 @@ package ShelfMate.BookTracker.controller;
 
 import ShelfMate.BookTracker.dto.BookForm;
 import ShelfMate.BookTracker.dto.BookWithRatingDTO;
-import ShelfMate.BookTracker.model.Author;
-import ShelfMate.BookTracker.model.Book;
-import ShelfMate.BookTracker.model.Category;
-import ShelfMate.BookTracker.model.User;
+import ShelfMate.BookTracker.model.*;
+import ShelfMate.BookTracker.repository.BookProgressRepository;
 import ShelfMate.BookTracker.service.*;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -24,8 +25,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
@@ -41,6 +45,9 @@ public class BookController {
     private final CategoryService categoryService;
     private final UserBookService userBookService;
     private final ReviewService reviewService;
+    private final BookProgressService bookProgressService;
+
+    private final BookProgressRepository bookProgressRepository;
 
     @GetMapping
     public String showBooks(Model model, Authentication authentication) {
@@ -88,7 +95,8 @@ public class BookController {
             @ModelAttribute("bookForm") @Valid BookForm bookForm,
             @RequestParam("imageFile") MultipartFile imageFile,
             BindingResult result,
-            Model model) throws IOException {
+            Model model,
+            Principal principal) throws IOException {
         log.info("Получены данные: {}", bookForm);
         if (result.hasErrors()) {
             log.error("Ошибки валидации: {}", result.getAllErrors());
@@ -111,6 +119,9 @@ public class BookController {
                 Files.copy(imageFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
                 bookForm.setCoverImage(fileName);
             }
+            User currentUser = userService.getByEmail(principal.getName());
+            bookForm.setOwner(currentUser);
+
             bookService.saveBookWithAuthors(bookForm);
             return "redirect:/books?success";
         } catch (Exception e) {
@@ -122,6 +133,29 @@ public class BookController {
         }
 //        return "redirect:/books";
     }
+
+    @PostMapping("/delete")
+    public String deleteBook(@RequestParam Long bookId, Principal principal, RedirectAttributes redirectAttributes) {
+        Book book = bookService.getBookById(bookId);
+        if (book == null) {
+            redirectAttributes.addFlashAttribute("error", "Книга не найдена.");
+            return "redirect:/books";
+        }
+
+        User currentUser = userService.getByEmail(principal.getName());
+
+        if (!book.getOwner().getUserId().equals(currentUser.getUserId())) {
+            redirectAttributes.addFlashAttribute("error", "Вы не можете удалить эту книгу.");
+            return "redirect:/books";
+        }
+
+        bookService.deleteBook(book);
+        redirectAttributes.addFlashAttribute("success", "Книга удалена.");
+        return "redirect:/books";
+    }
+
+
+
     @PostMapping("/addToCategory")
     public String addToCategory(
             @RequestParam Long bookId,
@@ -155,6 +189,29 @@ public class BookController {
         }
 
         return "redirect:/books";
+    }
+
+    @PostMapping("/update-progress")
+    public String updateBookProgress(@RequestParam Long bookId,
+                                     @RequestParam Integer currentPage,
+                                     @AuthenticationPrincipal UserDetails userDetails,
+                                     RedirectAttributes redirectAttributes) {
+        User user = userService.findByUsername(userDetails.getUsername());
+        Book book = bookService.getBookById(bookId);
+        Optional<BookProgress> progressOpt = bookProgressRepository.findByUserAndBook(user, book);
+
+        if (progressOpt.isPresent()) {
+            BookProgress progress = progressOpt.get();
+            if (currentPage <= progress.getTotalPages() && currentPage >= 0) {
+                progress.setCurrentPage(currentPage);
+                progress.setUpdatedAt(LocalDateTime.now());
+                bookProgressRepository.save(progress);
+                redirectAttributes.addFlashAttribute("success", "Прогресс обновлён");
+            } else {
+                redirectAttributes.addFlashAttribute("error", "Неверное значение страницы");
+            }
+        }
+        return "redirect:/profile";
     }
 
 

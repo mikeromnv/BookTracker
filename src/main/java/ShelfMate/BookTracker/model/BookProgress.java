@@ -1,12 +1,15 @@
 package ShelfMate.BookTracker.model;
 
 import jakarta.persistence.*;
+import lombok.Data;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "bookprogress")
+@IdClass(BookProgressId.class) // Составной ключ
+@Data
 public class BookProgress {
     @Id
     @ManyToOne

@@ -57,6 +57,7 @@ public class SecurityConfig {
                                 "/authors/**",
                                 "/books/add",
                                 "/books/bookform",
+                                "/books/update-progress",
                                 "/authors/",
                                 "/authors/new",
                                 "/authors/add",

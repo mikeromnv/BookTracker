@@ -56,4 +56,8 @@ public class Book {
     @Transient // Не сохраняется в БД
     private Long reviewCount;
 
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    private User owner;
+
 }
