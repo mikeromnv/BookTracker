@@ -16,6 +16,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -146,5 +148,19 @@ public class BookService {
     public void deleteBook(Book book) {
         bookRepository.delete(book);
     }
+
+    @Transactional
+    public void updateReadDate(Book book, LocalDate readDate, User user) {
+        Optional<UserBook> userBookOpt = userBookRepository.findByUserAndBook(user, book);
+        if (userBookOpt.isPresent()) {
+            UserBook userBook = userBookOpt.get();
+            System.out.println(readDate);
+            System.out.println(userBook.getAddedAt());
+            userBook.setAddedAt(readDate);
+            System.out.println(userBook.getAddedAt());
+            userBookRepository.save(userBook);
+        }
+    }
+
 
 }

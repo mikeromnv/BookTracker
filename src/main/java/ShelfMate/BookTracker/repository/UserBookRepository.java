@@ -26,4 +26,10 @@ public interface UserBookRepository extends JpaRepository<UserBook, Long> {
     @Query("DELETE FROM UserBook ub WHERE ub.book.bookId = :bookId AND ub.user.userId = :userId")
     @Modifying
     void deleteByBookBookIdAndUserId(Long bookId, Long userId);
+
+    Optional<UserBook> findByUserAndBook(User user, Book book);
+    List<UserBook> findByUser(User user);
+
+
+
 }

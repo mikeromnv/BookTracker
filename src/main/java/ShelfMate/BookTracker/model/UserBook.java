@@ -3,7 +3,9 @@ package ShelfMate.BookTracker.model;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -28,9 +30,13 @@ public class UserBook {
     @JoinColumn(name = "ctg_id", nullable = false)
     private Category category;
 
-    @Column(name = "added_at", updatable = false)
-    @CreationTimestamp
-    private LocalDateTime addedAt;
+//    @Column(name = "added_at", updatable = false)
+//    @CreationTimestamp
+//    private LocalDateTime addedAt;
+    @Column(name = "added_at")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate addedAt;
+
 }
 
 

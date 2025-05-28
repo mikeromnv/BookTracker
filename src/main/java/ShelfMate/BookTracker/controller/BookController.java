@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,6 +27,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.security.Principal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -218,6 +220,19 @@ public class BookController {
         }
         return "redirect:/profile";
     }
+    @PostMapping("/update-read-date")
+    public String updateReadDate(@RequestParam Long bookId,
+                                 @RequestParam("readDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate readDate,
+                                 Authentication authentication) {
+        if (authentication != null && authentication.isAuthenticated()) {
+            User user = userService.getByEmail(authentication.getName());
+            Book book = bookService.getBookById(bookId);
+            System.out.println("IM HERE\n"+user.getEmail()+"\n"+book.getBookId());
+            bookService.updateReadDate(book, readDate, user);
+        }
+        return "redirect:/profile";
+    }
+
 
 
 

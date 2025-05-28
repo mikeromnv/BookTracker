@@ -2,6 +2,7 @@ package ShelfMate.BookTracker.service;
 
 import ShelfMate.BookTracker.model.Book;
 import ShelfMate.BookTracker.model.Category;
+import ShelfMate.BookTracker.model.User;
 import ShelfMate.BookTracker.model.UserBook;
 import ShelfMate.BookTracker.repository.UserBookRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,10 @@ public class UserBookService {
 
     private final UserBookRepository userBookRepository;
 
+    public List<UserBook> getByUser(User user) {
+        return userBookRepository.findByUser(user);
+    }
+
     public Map<Category, List<Book>> getUserBooksGroupedByCategory(Long userId) {
         List<UserBook> userBooks = userBookRepository.findByUserIdWithCategory(userId);
 
@@ -27,4 +32,6 @@ public class UserBookService {
                         Collectors.mapping(UserBook::getBook, Collectors.toList())
                 ));
     }
+
+
 }

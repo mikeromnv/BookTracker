@@ -1,9 +1,6 @@
 package ShelfMate.BookTracker.controller;
 
-import ShelfMate.BookTracker.model.Book;
-import ShelfMate.BookTracker.model.BookProgress;
-import ShelfMate.BookTracker.model.Category;
-import ShelfMate.BookTracker.model.User;
+import ShelfMate.BookTracker.model.*;
 import ShelfMate.BookTracker.service.BookProgressService;
 import ShelfMate.BookTracker.service.UserBookService;
 import ShelfMate.BookTracker.service.UserService;
@@ -14,6 +11,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +25,7 @@ public class ProfileController {
     private final UserBookService userBookService;
     private final UserService userService;
     private final BookProgressService bookProgressService;
+
     @GetMapping
     public String getUserProfile(Model model, Authentication authentication) {
         String email = authentication.getName();
@@ -39,11 +39,20 @@ public class ProfileController {
         for (BookProgress bp : bookProgresses) {
             currentPageMap.put(bp.getBook(), bp.getCurrentPage());
         }
+        List<UserBook> userBooks = userBookService.getByUser(user);
+        Map<Book, LocalDate> readDateMap = new HashMap<>();
+        for (UserBook ub : userBooks) {
+            if (ub.getAddedAt() != null) {
+                readDateMap.put(ub.getBook(), ub.getAddedAt());
+            }
+        }
+
 
         model.addAttribute("user", user);
         model.addAttribute("booksByCategory", booksByCategory);
         model.addAttribute("bookProgress", bookProgresses);
         model.addAttribute("currentPageMap", currentPageMap);
+        model.addAttribute("readDateMap", readDateMap);
         return "profile";
     }
 }
