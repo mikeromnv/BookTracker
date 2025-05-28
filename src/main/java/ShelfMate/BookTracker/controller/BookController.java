@@ -194,21 +194,26 @@ public class BookController {
     @PostMapping("/update-progress")
     public String updateBookProgress(@RequestParam Long bookId,
                                      @RequestParam Integer currentPage,
-                                     @AuthenticationPrincipal UserDetails userDetails,
+                                     Authentication authentication,
                                      RedirectAttributes redirectAttributes) {
-        User user = userService.findByUsername(userDetails.getUsername());
-        Book book = bookService.getBookById(bookId);
-        Optional<BookProgress> progressOpt = bookProgressRepository.findByUserAndBook(user, book);
+        if (authentication != null && authentication.isAuthenticated()) {
+            User user = userService.getByEmail(authentication.getName());
 
-        if (progressOpt.isPresent()) {
-            BookProgress progress = progressOpt.get();
-            if (currentPage <= progress.getTotalPages() && currentPage >= 0) {
-                progress.setCurrentPage(currentPage);
-                progress.setUpdatedAt(LocalDateTime.now());
-                bookProgressRepository.save(progress);
-                redirectAttributes.addFlashAttribute("success", "Прогресс обновлён");
-            } else {
-                redirectAttributes.addFlashAttribute("error", "Неверное значение страницы");
+            Book book = bookService.getBookById(bookId);
+            Optional<BookProgress> progressOpt = bookProgressRepository.findByUserAndBook(user, book);
+            System.out.println("User: " + user.getUserId() + ", Book: " + book.getBookId());
+            System.out.println("BookProgress found: " + progressOpt.isPresent());
+
+            if (progressOpt.isPresent()) {
+                BookProgress progress = progressOpt.get();
+                if (currentPage <= progress.getTotalPages() && currentPage >= 0) {
+                    progress.setCurrentPage(currentPage);
+                    progress.setUpdatedAt(LocalDateTime.now());
+                    bookProgressRepository.save(progress);
+                    redirectAttributes.addFlashAttribute("success", "Прогресс обновлён");
+                } else {
+                    redirectAttributes.addFlashAttribute("error", "Неверное значение страницы");
+                }
             }
         }
         return "redirect:/profile";

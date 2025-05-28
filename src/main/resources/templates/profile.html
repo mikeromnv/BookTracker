@@ -8,6 +8,11 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
     <link rel="stylesheet" th:href="@{/css/profile.css}">
     <link rel="stylesheet" th:href="@{/css/navbar.css}">
+
+    <meta name="_csrf_parameter" th:content="${_csrf.parameterName}" />
+    <meta name="_csrf_token" th:content="${_csrf.token}" />
+
+
 </head>
 <body>
 <div class="container-fluid">
@@ -52,26 +57,33 @@
                                     </div>
 
                                     <div class="card-footer">
-                                        <div class="d-flex justify-content-between align-items-center">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
                                             <small class="text-muted" th:text="${book.yearPublic} ?: 'Год не указан'"></small>
                                             <button class="btn btn-sm btn-outline-primary view-book-btn"
                                                     th:data-book-id="${book.bookId}"
                                                     th:data-book-title="${book.title}"
-
                                                     th:data-book-description="${book.description}"
                                                     th:data-book-year="${book.yearPublic}"
                                                     th:data-book-cover="${book.coverUrl != null ? '/images/books/' + book.coverUrl : ''}"
                                                     th:data-book-total-pages="${book.pageCount}"
-
                                                     th:data-book-category="${entry.key.name}"
                                                     th:data-book-current-page="${currentPageMap.get(book) ?: 0}">
-
-
-
                                                 Подробнее
                                             </button>
                                         </div>
+                                        <!-- Прогресс прочтения -->
+                                        <div th:if="${currentPageMap.containsKey(book)}">
+                                            <div class="progress" style="height: 10px;">
+                                                <div class="progress-bar bg-success" role="progressbar"
+                                                     th:style="'width: ' + (${currentPageMap.get(book)} * 100 / ${book.pageCount}) + '%'"></div>
+                                            </div>
+                                            <small class="text-muted">
+                                                <span th:text="${currentPageMap.get(book)}"></span> /
+                                                <span th:text="${book.pageCount}"></span> стр.
+                                            </small>
+                                        </div>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
@@ -141,11 +153,14 @@
             `;
 
                 document.getElementById('bookModalBody').innerHTML = modalContent;
+                const csrfParam = document.querySelector('meta[name="_csrf_parameter"]').getAttribute('content');
+                const csrfToken = document.querySelector('meta[name="_csrf_token"]').getAttribute('content');
 
                 let modalFooter = '';
                 if (bookCategory === 'Читаю сейчас') {
                     modalFooter = `
                     <form method="post" action="/books/update-progress" class="d-flex align-items-center w-100">
+                        <input type="hidden" name="${csrfParam}" value="${csrfToken}"> <!-- CSRF-токен -->
                         <input type="hidden" name="bookId" value="${bookId}">
                         <label for="currentPageInput" class="me-2 mb-0">Текущая страница:</label>
                         <input type="number" class="form-control me-2" id="currentPageInput" name="currentPage"
@@ -155,6 +170,7 @@
                     </form>
                 `;
                 }
+
                 document.getElementById('bookModalFooter').innerHTML = modalFooter;
 
 
