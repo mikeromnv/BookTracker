@@ -49,5 +49,18 @@ public class BookProgressService {
     }
 
 
+    public void updateProgress(User user, Book book, int currentPage) {
+        BookProgress progress = bookProgressRepository
+                .findByUserAndBook(user, book)
+                .orElseGet(() -> new BookProgress(user, book, book.getPageCount(), currentPage, LocalDateTime.now()));
+
+        progress.setTotalPages(book.getPageCount());
+        progress.setCurrentPage(currentPage);
+        progress.setUpdatedAt(LocalDateTime.now());
+
+        bookProgressRepository.save(progress);
+    }
+
+
 
 }

@@ -1,7 +1,9 @@
 package ShelfMate.BookTracker.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
@@ -10,6 +12,8 @@ import java.time.LocalDateTime;
 @Table(name = "bookprogress")
 @IdClass(BookProgressId.class) // Составной ключ
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class BookProgress {
     @Id
     @ManyToOne
