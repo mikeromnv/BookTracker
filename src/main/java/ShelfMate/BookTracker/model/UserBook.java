@@ -37,6 +37,14 @@ public class UserBook {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate addedAt;
 
+    @PrePersist
+    public void prePersist() {
+        if (this.addedAt == null) {
+            this.addedAt = LocalDate.now();
+        }
+    }
+
+
 }
 
 

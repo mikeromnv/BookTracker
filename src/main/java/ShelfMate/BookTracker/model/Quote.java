@@ -2,7 +2,9 @@ package ShelfMate.BookTracker.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -25,7 +27,15 @@ public class Quote {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String quoteText;
 
-    @Column(nullable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    @Column(name = "created_at")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate createdAt;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.createdAt == null) {
+            this.createdAt = LocalDate.now();
+        }
+    }
 
 }

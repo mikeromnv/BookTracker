@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавить цитату | BookTracker</title>
+    <link rel="stylesheet" href="/css/books.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+</head>
+<body th:classappend="${not #authorization.expression('isAuthenticated()')} ? 'unauth' : ''">
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Боковая панель -->
+        <div th:replace="fragments/navbar :: sidebar"></div>
+
+        <!-- Основное содержимое -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+            <div class="container col-md-8">
+                <h2 class="mb-4">Добавить цитату</h2>
+                <form th:action="@{/quotes/add}" th:object="${quote}" method="post">
+                    <div class="mb-3">
+                        <label for="quoteText" class="form-label">Текст цитаты</label>
+                        <textarea class="form-control" id="quoteText" th:field="*{quoteText}" rows="4" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="bookId" class="form-label">Книга</label>
+                        <select class="form-select" id="bookId" th:field="*{bookId}" required>
+                            <option value="">-- Выберите книгу --</option>
+                            <option th:each="book : ${books}"
+                                    th:value="${book.bookId}"
+                                    th:text="${book.title}">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="d-flex justify-content-start gap-2">
+                        <button type="submit" class="btn btn-primary">Сохранить</button>
+                        <a th:href="@{/quotes}" class="btn btn-secondary">Отмена</a>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
