@@ -40,6 +40,7 @@ public class UserGoal {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
+
     @PrePersist
     @PreUpdate
     private void validateDates() {

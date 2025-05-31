@@ -64,7 +64,9 @@ public class SecurityConfig {
                                 "/allreviews",
                                 "/quotes",
                                 "/settings/**",
-                                "/allreviews/**"
+                                "/allreviews/**",
+                                "/user-goals/",
+                                "user-goals/**"
                         ).permitAll()
 
                         .anyRequest().authenticated()
