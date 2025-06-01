@@ -22,7 +22,7 @@ public class GoalController {
     public String showIndex(Authentication authentication, Model model) {
         if (authentication != null && authentication.isAuthenticated()) {
             User user = userService.getByEmail(authentication.getName());
-            GoalProgress progress = goalService.getReadingGoalProgress(user.getUserId());
+            GoalProgress progress = goalService.getCurrentReadingGoalProgress(user.getUserId());
             model.addAttribute("goalProgress", progress);
         }
         return "index";

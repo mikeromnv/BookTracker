@@ -18,7 +18,7 @@ public class GoalService {
     private final GoalRepository goalRepository;
     private final GoalTypeRepository goalTypeRepository;
 
-    public GoalProgress getReadingGoalProgress(Long userId) {
+    public GoalProgress getCurrentReadingGoalProgress(Long userId) {
         return goalRepository.findReadingGoalProgress(userId)
                 .orElseGet(() -> {
                     int readCount = goalRepository.countReadBooks(userId);
@@ -35,7 +35,7 @@ public class GoalService {
         GoalType readingGoalType = goalTypeRepository.findByName("Годовая цель")
                 .orElseThrow(() -> new RuntimeException("Тип цели не найден"));
 
-        UserGoal goal = goalRepository.findByUserAndGoalType(user, readingGoalType.getTypeId())
+        UserGoal goal = goalRepository.findActualGoalByUserAndGoalType(user, readingGoalType.getTypeId())
                 .orElse(new UserGoal());
 
         goal.setUser(user);

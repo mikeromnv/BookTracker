@@ -62,9 +62,11 @@
               <td th:text="${goal.goalType.name}"></td>
               <td th:text="${goal.targetValue}"></td>
               <td th:text="${goal.progressValue}"></td>
-              <td th:text="${goal.startDate}"></td>
-              <td th:text="${goal.deadline}"></td>
-              <td th:text="${#temporals.format(goal.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+<!--              <td th:text="${goal.startDate}"></td>-->
+              <td th:text="${#temporals.format(goal.startDate, 'dd-MM-yyyy')}"></td>
+<!--              <td th:text="${goal.deadline}"></td>-->
+              <td th:text="${#temporals.format(goal.deadline, 'dd-MM-yyyy')}"></td>
+              <td th:text="${#temporals.format(goal.createdAt, 'dd-MM-yyyy HH:mm')}"></td>
               <td>
                 <form th:action="@{/user-goals/delete/{id}(id=${goal.goalId})}" method="post" th:object="${goal}">
                   <input type="hidden" name="_method" value="delete"/>

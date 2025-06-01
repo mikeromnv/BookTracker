@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,6 +31,8 @@ public interface UserBookRepository extends JpaRepository<UserBook, Long> {
     Optional<UserBook> findByUserAndBook(User user, Book book);
     List<UserBook> findByUser(User user);
 
+    @Query("SELECT ub FROM UserBook ub WHERE ub.user.userId = :userId AND ub.addedAt >= :fromDate AND ub.category.name='Прочитано' ")
+    List<UserBook> findReadBooksInLastYear(@Param("userId") Long userId, @Param("fromDate") LocalDate fromDate);
 
 
 }
