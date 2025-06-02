@@ -157,8 +157,6 @@ public class BookController {
         return "redirect:/books";
     }
 
-
-
     @PostMapping("/addToCategory")
     public String addToCategory(
             @RequestParam Long bookId,
@@ -241,6 +239,34 @@ public class BookController {
 
     }
 
+
+    @GetMapping("/edit/{id}")
+    public String editBookForm(@PathVariable Long id, Model model, Authentication authentication) {
+        Book book = bookService.getBookById(id);
+
+        if (!book.getOwner().getEmail().equals(authentication.getName())) {
+            return "redirect:/access-denied";
+        }
+
+        BookForm form = bookService.convertToForm(book); // Преобразование сущности в форму
+        model.addAttribute("bookForm", form);
+        model.addAttribute("genres", genreService.getAllGenres());
+        model.addAttribute("authors", authorService.getAllAuthors());
+
+        return "book/book-edit"; // Имя шаблона редактирования
+    }
+
+
+    @PostMapping("/update")
+    public String updateBook(@ModelAttribute("bookForm") BookForm form,
+                             @RequestParam("imageFile") MultipartFile imageFile,
+                             Authentication authentication) throws IOException {
+        Long bookId = form.getBookId();
+        User user = userService.getByEmail(authentication.getName());
+        bookService.updateBook(form, imageFile, user, bookId);
+
+        return "redirect:/books";
+    }
 
 
 

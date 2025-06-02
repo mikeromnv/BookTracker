@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,5 +23,15 @@ public class AuthorService {
     }
     public List<Author> getRandomAuthors(int count) {
         return authorRepository.findRandomAuthors(count);
+    }
+
+    public Author getAuthorById(Long id) {
+        return authorRepository.findById(id).orElse(null);
+    }
+
+
+    @Transactional
+    public void deleteAuthor(Author author) {
+        authorRepository.delete(author);
     }
 }

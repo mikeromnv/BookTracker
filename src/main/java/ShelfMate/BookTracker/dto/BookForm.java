@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 public class BookForm {
-
+    private Long bookId;
     private String title;
     private String isbnNum;
     private Integer yearPublic;

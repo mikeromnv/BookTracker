@@ -16,6 +16,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -81,6 +85,7 @@ public class BookService {
                     bookAuthorRepository.save(bookAuthor);
                 }
             }
+            form.setBookId(book.getBookId());
     }
 
     @Transactional
@@ -166,6 +171,74 @@ public class BookService {
             System.out.println(userBook.getAddedAt());
             userBookRepository.save(userBook);
         }
+    }
+
+    public BookForm convertToForm(Book book) {
+        BookForm form = new BookForm();
+        form.setBookId(book.getBookId());
+        form.setTitle(book.getTitle());
+        form.setIsbnNum(book.getIsbnNum());
+        form.setYearPublic(book.getYearPublic());
+        form.setDescription(book.getDescription());
+        form.setPageCount(book.getPageCount());
+        form.setCoverImage(book.getCoverUrl());
+        form.setGenreId(book.getGenre().getGenreId());
+        List<BookAuthor> bookAuthors = book.getBookAuthors();
+        List<Long> bookAuthorsId = new ArrayList<>();
+        for (BookAuthor bookAuthor : bookAuthors) {
+            bookAuthorsId.add(bookAuthor.getAuthor().getAuthorId());
+        }
+        form.setAuthorIds(bookAuthorsId);
+        return form;
+    }
+
+
+    @Transactional
+    public void updateBook(BookForm form, MultipartFile imageFile, User user, Long bookId) throws IOException {
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new RuntimeException("Книга не найдена"));
+
+        if (!book.getOwner().getEmail().equals(user.getEmail())) {
+            throw new SecurityException("Нет прав на редактирование");
+        }
+
+        book.setTitle(form.getTitle());
+        book.setIsbnNum(form.getIsbnNum());
+        book.setYearPublic(form.getYearPublic());
+        book.setDescription(form.getDescription());
+        book.setPageCount(form.getPageCount());
+
+        Genre genre = genreRepository.findById(form.getGenreId()).orElse(null);
+        book.setGenre(genre);
+
+
+        book.getBookAuthors().clear();
+        for (Long authorId : form.getAuthorIds()) {
+            Author author = authorRepository.findById(authorId).orElse(null);
+            BookAuthor bookAuthor = new BookAuthor();
+            BookAuthorId bookAuthorId = new BookAuthorId(book.getBookId(), authorId);
+            bookAuthor.setId(bookAuthorId);
+            bookAuthor.setAuthor(author);
+            bookAuthor.setBook(book);
+
+            book.getBookAuthors().add(bookAuthor);
+        }
+        if (!imageFile.isEmpty()) {
+            String fileName = imageFile.getOriginalFilename();
+            Path uploadDir = Paths.get("src/main/resources/static/images/books");
+
+            if (!Files.exists(uploadDir)) {
+                Files.createDirectories(uploadDir);
+            }
+
+            Path filePath = uploadDir.resolve(fileName);
+            Files.copy(imageFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+            System.out.println("IM HERE!");
+            System.out.println(fileName);
+            book.setCoverUrl(fileName);
+        }
+
+        bookRepository.save(book);
     }
 
 

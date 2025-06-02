@@ -23,4 +23,7 @@ public class Author {
     @OneToMany(mappedBy = "author")
     private List<BookAuthor> bookAuthors = new ArrayList<>();
 
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    private User owner;
 }
