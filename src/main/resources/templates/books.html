@@ -32,8 +32,9 @@
                     </div>
                 </header>
             </div>
-            <a th:href="@{books/bookform}" class="btn btn-primary mb-3">Добавить книгу</a>
-
+            <div sec:authorize="isAuthenticated()">
+                <a th:href="@{books/bookform}" class="btn btn-primary mb-3" >Добавить книгу</a>
+            </div>
             <div class="container books-grid col-md-9">
                 <div th:each="book : ${books}" class="book-card"
                      th:classappend="${isAuthenticated && userBookCategories != null} ?

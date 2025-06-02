@@ -33,7 +33,10 @@ public class UserGoalController {
         User user = userService.getByEmail(authentication.getName());
         List<UserGoal> goals = userGoalService.getAllGoals(user);
         boolean hasActiveGoal = userGoalService.hasActiveYearlyGoal(user);
-
+        if (hasActiveGoal) {
+            UserGoal activeGoal = userGoalService.getActiveGoal(user);
+            model.addAttribute("activeGoal", activeGoal);
+        }
         model.addAttribute("goals", goals);
         model.addAttribute("hasActiveGoal", hasActiveGoal);
         return "user-goals";

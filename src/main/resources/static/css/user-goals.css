@@ -1,0 +1,23 @@
+.table th, .table td {
+    vertical-align: middle;
+    text-align: center;
+}
+
+.add-book-form h2 {
+    margin-bottom: 20px;
+}
+
+.btn-danger {
+    width: 100%;
+}
+
+.table td form {
+    margin: 0;
+}
+
+.highlight-goal > * {
+    box-shadow: inset 0 0 0 9999px #0d6efd85 !important;
+    color: white !important;
+    font-weight: bold;
+}
+

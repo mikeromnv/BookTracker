@@ -28,6 +28,9 @@ public class UserGoalService {
     public boolean hasActiveYearlyGoal(User user) {
         return userGoalRepository.existsByUserAndGoalTypeNameAndDeadlineAfter(user, "Годовая цель", LocalDate.now());
     }
+    public UserGoal getActiveGoal(User user) {
+        return userGoalRepository.findByUserAndGoalTypeNameAndDeadlineAfter(user, "Годовая цель", LocalDate.now());
+    }
 
     public void addYearlyGoal(User user, int targetValue, LocalDate deadline) {
         if (hasActiveYearlyGoal(user)) {

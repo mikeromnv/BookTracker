@@ -14,5 +14,7 @@ public interface UserGoalRepository extends JpaRepository<UserGoal, Long> {
 
     boolean existsByUserAndGoalTypeNameAndDeadlineAfter(User user, String goalTypeName, LocalDate currentDate);
 
+    UserGoal findByUserAndGoalTypeNameAndDeadlineAfter(User user, String goalTypeName, LocalDate currentDate);
+
     List<UserGoal> findAllByUser(User user);
 }

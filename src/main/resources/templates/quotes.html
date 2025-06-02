@@ -33,7 +33,10 @@
                     </div>
                 </header>
             </div>
-            <a th:href="@{/quotes/add}" class="btn btn-primary mb-3">Добавить цитату</a>
+            <div sec:authorize="isAuthenticated()">
+                <a th:href="@{/quotes/add}" class="btn btn-primary mb-3">Добавить цитату</a>
+            </div>
+
             <div class="container quotes-grid col-md-9">
                 <div th:each="quote : ${quotes}" class="card mb-4 shadow-sm">
                     <div class="card-body">

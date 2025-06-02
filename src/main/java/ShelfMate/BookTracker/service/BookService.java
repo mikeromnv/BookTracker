@@ -100,6 +100,7 @@ public class BookService {
         userBook.setBook(book);
         userBook.setUser(user);
         userBook.setCategory(category);
+        userBook.setAddedAt(LocalDate.now());
         //System.out.println(categoryName + "\n" + (categoryName.equalsIgnoreCase("Читаю сейчас")) + "\n");
 
         if (cleanedCategoryName.equalsIgnoreCase("Читаю сейчас")){
@@ -110,7 +111,12 @@ public class BookService {
             bookProgress.setTotalPages(book.getPageCount());
             bookProgressRepository.save(bookProgress);
         }
-
+        if (cleanedCategoryName.equalsIgnoreCase("Прочитано") || cleanedCategoryName.equalsIgnoreCase("{Хочу прочитать}") ){
+            boolean exists = bookProgressRepository.findByUserAndBook(user, book).isPresent();
+            if (exists){
+                removeBookFromCategory(bookId,userId);
+            }
+        }
         userBookRepository.save(userBook);
     }
 

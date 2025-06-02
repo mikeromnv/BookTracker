@@ -209,12 +209,18 @@ public class BookController {
 
             if (progressOpt.isPresent()) {
                 BookProgress progress = progressOpt.get();
-                if (currentPage <= progress.getTotalPages() && currentPage >= 0) {
+                if (currentPage < progress.getTotalPages() && currentPage >= 0) {
                     progress.setCurrentPage(currentPage);
                     progress.setUpdatedAt(LocalDateTime.now());
                     bookProgressRepository.save(progress);
                     redirectAttributes.addFlashAttribute("success", "Прогресс обновлён");
-                } else {
+                }
+                else if(currentPage.equals(progress.getTotalPages())) {
+                    System.out.println("IM HERE!");
+                    bookService.removeBookFromCategory(bookId, user.getUserId());
+                    bookService.addBookToCategory(bookId, "Прочитано", user.getUserId());
+                }
+                else {
                     redirectAttributes.addFlashAttribute("error", "Неверное значение страницы");
                 }
             }
