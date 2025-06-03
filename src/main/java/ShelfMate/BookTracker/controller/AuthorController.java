@@ -1,6 +1,8 @@
 package ShelfMate.BookTracker.controller;
 
 
+import ShelfMate.BookTracker.dto.AuthorForm;
+import ShelfMate.BookTracker.dto.BookForm;
 import ShelfMate.BookTracker.model.Author;
 import ShelfMate.BookTracker.model.Book;
 import ShelfMate.BookTracker.model.User;
@@ -13,8 +15,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 
@@ -72,4 +76,29 @@ public class AuthorController {
         redirectAttributes.addFlashAttribute("success", "Автор удален.");
         return "redirect:/authors";
     }
+
+    @GetMapping("/edit/{id}")
+    public String editAuthorForm(@PathVariable Long id, Model model, Authentication authentication) {
+
+        Author author = authorService.getAuthorById(id);
+        if (!author.getOwner().getEmail().equals(authentication.getName())) {
+            return "redirect:/access-denied";
+        }
+
+        AuthorForm form = authorService.convertToForm(author); // Преобразование сущности в форму
+        model.addAttribute("authorForm", form);
+        return "author/author-edit"; // Имя шаблона редактирования
+    }
+
+
+    @PostMapping("/update")
+    public String updateBook(@ModelAttribute("authorForm") AuthorForm form,
+                             Authentication authentication) throws IOException {
+        Long authorId = form.getAuthorId();
+        User user = userService.getByEmail(authentication.getName());
+        authorService.updateAuthor(form, user, authorId);
+
+        return "redirect:/authors";
+    }
+
 }

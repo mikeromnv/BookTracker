@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Редактировать автора | BookTracker</title>
+  <link rel="stylesheet" href="/css/author.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+  <link rel="stylesheet" th:href="@{/css/navbar.css}">
+</head>
+<body>
+<div class="container-fluid">
+  <div class="row">
+    <!-- Боковая панель -->
+    <div th:replace="fragments/navbar :: sidebar"></div>
+
+    <main class="container col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+
+      <!-- Добавьте в начало main -->
+      <div th:if="${param.error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${param.error}">Ошибка</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+
+      <div th:if="${param.authorSuccess}" class="alert alert-success alert-dismissible fade show" role="alert">
+        Изменения сохранены!
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+
+      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Редактировать автора</h1>
+      </div>
+
+      <div class="author-form">
+        <form th:action="@{/authors/update}" th:object="${authorForm}" method="post">
+          <input type="hidden" th:field="*{authorId}">
+          <!-- ФИО автора -->
+          <div class="mb-3">
+            <label for="authorName" class="form-label">ФИО автора</label>
+            <input type="text" class="form-control" id="authorName"
+                   th:field="*{authorName}" required
+                   minlength="2" maxlength="100">
+            <div class="invalid-feedback">
+              Пожалуйста, введите имя автора (от 2 до 100 символов)
+            </div>
+          </div>
+
+          <!-- Биография -->
+          <div class="mb-4">
+            <label for="bio" class="form-label">Биография</label>
+            <textarea class="form-control" id="bio"
+                      th:field="*{bio}" rows="6"
+                      maxlength="2000"></textarea>
+          </div>
+
+          <!-- Кнопки -->
+          <div class="d-flex justify-content-between align-items-center">
+            <button type="submit" class="btn btn-primary btn-submit">Сохранить изменения</button>
+            <a th:href="@{/authors}" class="btn btn-outline-secondary back-link">Назад к авторам</a>
+          </div>
+        </form>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</body>
+</html>
