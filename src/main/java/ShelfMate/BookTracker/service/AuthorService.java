@@ -67,4 +67,8 @@ public class AuthorService {
        authorRepository.save(author);
     }
 
+    public List<Author> searchAuthors(String authorName) {
+        return authorRepository.findAuthorsByFilters(authorName);
+    }
+
 }

@@ -12,6 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @Data
 @RequestMapping("/quotes")
@@ -21,8 +23,20 @@ public class QuoteController {
     private final UserService userService;
 
     @GetMapping
-    public String showAllQuotes(Model model) {
-        model.addAttribute("quotes", quoteService.getAllQuotes());
+    public String showAllQuotes(Model model,
+                                @RequestParam(required = false) String quoteText,
+                                @RequestParam(required = false) Long bookId) {
+        List<Quote> quotes;
+        if (quoteText != null || bookId != null) {
+            quotes = quoteService.searchQuote(quoteText, bookId);
+        }
+        else {
+            quotes = quoteService.getAllQuotes();
+        }
+        model.addAttribute("quotes", quotes);
+        model.addAttribute("books", bookService.getAllBooks());
+        model.addAttribute("bookId", bookId);
+        model.addAttribute("quoteText", quoteText);
         return "quotes"; // quotes.html
     }
 

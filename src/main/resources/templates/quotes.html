@@ -23,13 +23,36 @@
                 <header class="header">
                     <h1 class="page-title">Все цитаты</h1>
                     <div class="controls">
-                        <input type="text" class="search-input" placeholder="Поиск по цитатам...">
-                        <select class="sort-select">
-                            <option>Сортировать по</option>
-                            <option>Книге</option>
-                            <option>Автору цитаты</option>
-                            <option>Пользователю</option>
-                        </select>
+                        <form th:action="@{/quotes}" method="get" class="mb-4">
+                            <div class="row">
+                                <!-- Поиск по названию -->
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" name="quoteText" placeholder="Поиск по цитате"
+                                           th:value="${quoteText}">
+                                </div>
+
+
+                                <!-- Фильтрация по книге -->
+                                <div class="col-md-3">
+                                    <select class="form-select" name="bookId">
+                                        <option value="">Все книги</option>
+                                        <option th:each="b : ${books}" th:value="${b.bookId}"
+                                                th:text="${b.title}"
+                                                th:selected="${b.bookId == bookId}">
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-primary w-100">Найти</button>
+                                </div>
+                                <div class="col-md-2 mt-2 mt-md-0">
+                                    <a th:href="@{/quotes}" class="btn btn-secondary w-100">Сбросить</a>
+                                </div>
+
+                            </div>
+                        </form>
+
                     </div>
                 </header>
             </div>

@@ -25,12 +25,11 @@
             <form th:action="@{/allreviews}" method="get">
               <div class="d-flex justify-content-between align-items-center mb-3" sec:authorize="isAuthenticated()">
                 <a th:href="@{allreviews/add-review}" class="btn btn-success">Оставить отзыв</a>
-                <div class="d-flex gap-2">
-                  <button type="submit" class="btn btn-primary">Фильтровать</button>
-                  <a th:href="@{/allreviews}" class="btn btn-outline-secondary">Сбросить фильтры</a>
-                </div>
               </div>
-
+              <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Фильтровать</button>
+                <a th:href="@{/allreviews}" class="btn btn-outline-secondary">Сбросить фильтры</a>
+              </div>
               <div class="row">
                 <div class="col-md-4">
                   <label class="form-label">Книга</label>

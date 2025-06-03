@@ -49,7 +49,9 @@ public class QuoteService {
     public void deleteQuoteById(Long id) {
         quoteRepository.deleteById(id);
     }
-
+    public List<Quote> searchQuote(String quoteText, Long bookId) {
+        return quoteRepository.findQuotesByFilters(quoteText, bookId);
+    }
 
 }
 

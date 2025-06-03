@@ -23,4 +23,8 @@ public interface AuthorRepository extends JpaRepository<Author, Long> {
     Author findById(long id);
 
     Optional<Author> findByAuthorName(String name);
+
+    @Query("SELECT DISTINCT a FROM Author a " +
+            "WHERE (:authorName IS NULL OR LOWER(a.authorName) LIKE LOWER(CONCAT('%', :authorName, '%'))) ")
+    List<Author> findAuthorsByFilters(@Param("authorName") String authorName);
 }

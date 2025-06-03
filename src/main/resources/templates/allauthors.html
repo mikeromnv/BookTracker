@@ -23,7 +23,25 @@
                 <header class="header">
                     <h1 class="page-title">Все авторы</h1>
                     <div class="controls">
-                        <input type="text" class="search-input" placeholder="Поиск авторов...">
+                        <form th:action="@{/authors}" method="get" class="mb-4">
+                            <div class="row">
+                                <!-- Поиск по автору -->
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" name="authorName" placeholder="Поиск по автору"
+                                           th:value="${authorName}">
+                                </div>
+
+
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-primary w-100">Найти</button>
+                                </div>
+                                <div class="col-md-2 mt-2 mt-md-0">
+                                    <a th:href="@{/authors}" class="btn btn-secondary w-100">Сбросить</a>
+                                </div>
+
+                            </div>
+                        </form>
+
                     </div>
                 </header>
             </div>

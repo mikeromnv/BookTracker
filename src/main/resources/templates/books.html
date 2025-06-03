@@ -23,12 +23,46 @@
                 <header class="header">
                     <h1 class="page-title">Все книги</h1>
                     <div class="controls">
-                        <input type="text" class="search-input" placeholder="Поиск книг...">
-                        <select class="sort-select">
-                            <option>Сортировать по</option>
-                            <option>Названию</option>
-                            <option>Автору</option>
-                        </select>
+                        <form th:action="@{/books}" method="get" class="mb-4">
+                            <div class="row">
+                                <!-- Поиск по названию -->
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" name="title" placeholder="Поиск по названию"
+                                           th:value="${title}">
+                                </div>
+
+                                <!-- Фильтрация по автору -->
+                                <div class="col-md-3">
+                                    <select class="form-select" name="authorId">
+                                        <option value="">Все авторы</option>
+                                        <option th:each="a : ${authors}" th:value="${a.authorId}"
+                                                th:text="${a.authorName}"
+                                                th:selected="${a.authorId == authorId}">
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <!-- Фильтрация по жанру -->
+                                <div class="col-md-3">
+                                    <select class="form-select" name="genreId">
+                                        <option value="">Все жанры</option>
+                                        <option th:each="g : ${genres}" th:value="${g.genreId}"
+                                                th:text="${g.name}"
+                                                th:selected="${g.genreId == genreId}">
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-primary w-100">Найти</button>
+                                </div>
+                                <div class="col-md-2 mt-2 mt-md-0">
+                                    <a th:href="@{/books}" class="btn btn-secondary w-100">Сбросить</a>
+                                </div>
+
+                            </div>
+                        </form>
+
                     </div>
                 </header>
             </div>

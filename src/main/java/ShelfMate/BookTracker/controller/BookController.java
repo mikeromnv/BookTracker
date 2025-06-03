@@ -4,11 +4,16 @@ import ShelfMate.BookTracker.dto.BookForm;
 import ShelfMate.BookTracker.dto.BookWithRatingDTO;
 import ShelfMate.BookTracker.model.*;
 import ShelfMate.BookTracker.repository.BookProgressRepository;
+import ShelfMate.BookTracker.repository.BookRepository;
 import ShelfMate.BookTracker.service.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -51,16 +56,25 @@ public class BookController {
     private final BookProgressService bookProgressService;
 
     private final BookProgressRepository bookProgressRepository;
+    private final BookRepository bookRepository;
 
     @GetMapping
-    public String showBooks(Model model, Authentication authentication) {
-        List<Book> books = bookService.getAllBooks();
-
+    public String showBooks(Model model, Authentication authentication,
+                            @RequestParam(required = false) String title,
+                            @RequestParam(required = false) Long authorId,
+                            @RequestParam(required = false) Long genreId) {
+        //List<Book> books = bookService.getAllBooks();
+        List<Book> books;
+        if (title != null || authorId != null || genreId != null) {
+            books = bookService.searchBooks(title, authorId, genreId);
+        } else {
+            books = bookService.getAllBooks();
+        }
         if (authentication!= null) {
             String email = authentication.getName();
             User user = userService.getByEmail(email);
             Map<Category, List<Book>> booksByCategory = userBookService.getUserBooksGroupedByCategory(user.getUserId());
-// Новый маппинг: bookId -> categoryName
+
             Map<Long, String> userBookCategories = booksByCategory.entrySet().stream()
                     .flatMap(entry -> entry.getValue().stream()
                             .map(book -> Map.entry(book.getBookId(), entry.getKey().getName())))
@@ -82,8 +96,19 @@ public class BookController {
         model.addAttribute("books", books);
         model.addAttribute("authors", authors);
         model.addAttribute("isAuthenticated", authentication != null && authentication.isAuthenticated());
+
+
+        model.addAttribute("books", books);
+        model.addAttribute("authors", authorService.getAllAuthors());
+        model.addAttribute("genres", genreService.getAllGenres());
+        model.addAttribute("title", title);
+        model.addAttribute("authorId", authorId);
+        model.addAttribute("genreId", genreId);
         return "books";
     }
+
+
+
 
     @GetMapping("/bookform")
     public String showBookForm(Model model) {

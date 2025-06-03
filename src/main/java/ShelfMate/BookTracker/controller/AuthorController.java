@@ -50,9 +50,16 @@ public class AuthorController {
         }
     }
     @GetMapping
-    public String showAllAuthors(Model model) {
-        List<Author> authors = authorService.getAllAuthors();
+    public String showAllAuthors(Model model, @RequestParam(required = false) String authorName) {
+        List<Author> authors;
+        if (authorName != null && !authorName.trim().isEmpty()) {
+            authors = authorService.searchAuthors(authorName);
+        } else {
+            authors = authorService.getAllAuthors();
+        }
+
         model.addAttribute("authors", authors);
+        model.addAttribute("authorName", authorName);
         return "allauthors";
     }
 
