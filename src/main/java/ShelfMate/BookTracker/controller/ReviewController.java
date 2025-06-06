@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -84,35 +85,40 @@ public class ReviewController {
 
     @PostMapping("/save-review")
     public String saveReview(@ModelAttribute("review") Review review,
-                             Authentication authentication,
-                             RedirectAttributes redirectAttributes) {
+                             BindingResult bindingResult,
+                             Model model,
+                             Authentication authentication) {
 
-        try {
-            User user = userService.getByEmail(authentication.getName());
-            Book book = bookService.getBookById(review.getBook().getBookId());
+        User user = userService.getByEmail(authentication.getName());
+        Book book = bookService.getBookById(review.getBook().getBookId());
 
-            review.setUser(user);
-            review.setBook(book);
-            review.setCreatedAt(LocalDateTime.now());
-            review.setIsNew(false);
-
-            reviewRepository.save(review);
-
-            redirectAttributes.addFlashAttribute("success", "Отзыв успешно сохранен!");
-            return "redirect:/allreviews";
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Ошибка при сохранении отзыва");
-            return "redirect:/allreviews/add-review";
+        if (reviewRepository.existsByUserAndBook(user, book)) {
+            bindingResult.rejectValue("book.bookId", "review.exists", "Вы уже оставляли отзыв на эту книгу");
         }
+        if (bindingResult.hasErrors()) {
+            review.setIsNew(true);
+            model.addAttribute("books", bookService.getAllBooks());
+            return "/add-review";
+        }
+
+        review.setUser(user);
+        review.setBook(book);
+        review.setCreatedAt(LocalDateTime.now());
+        review.setIsNew(false);
+
+        reviewRepository.save(review);
+
+        return "redirect:/allreviews";
     }
+
 
     // Показать форму редактирования
     @GetMapping("/edit/{id}")
     public String showEditReviewForm(@PathVariable Long id, Model model) {
         Review review = reviewService.getReviewById(id);
         model.addAttribute("review", review);
-        model.addAttribute("books", bookService.getAllBooks()); // нужно, если книга участвует в select
-        return "add-review"; // имя существующего шаблона
+        model.addAttribute("books", bookService.getAllBooks());
+        return "add-review";
     }
 
 

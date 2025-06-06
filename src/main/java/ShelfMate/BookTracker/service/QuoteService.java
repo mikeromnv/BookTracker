@@ -26,6 +26,7 @@ public class QuoteService {
 
         Book book = bookRepository.findById(form.getBookId()).orElseThrow();
 
+
         Quote quote = new Quote();
         quote.setQuoteText(form.getQuoteText());
         quote.setBook(book);

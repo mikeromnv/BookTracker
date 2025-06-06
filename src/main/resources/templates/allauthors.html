@@ -21,74 +21,78 @@
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
             <div class="container col-md-9">
                 <header class="header">
-                    <h1 class="page-title">Все авторы</h1>
-                    <div class="controls">
-                        <form th:action="@{/authors}" method="get" class="mb-4">
-                            <div class="row">
-                                <!-- Поиск по автору -->
-                                <div class="col-md-4">
-                                    <input type="text" class="form-control" name="authorName" placeholder="Поиск по автору"
-                                           th:value="${authorName}">
-                                </div>
-
-
-                                <div class="col-md-2">
-                                    <button type="submit" class="btn btn-primary w-100">Найти</button>
-                                </div>
-                                <div class="col-md-2 mt-2 mt-md-0">
-                                    <a th:href="@{/authors}" class="btn btn-secondary w-100">Сбросить</a>
-                                </div>
-
-                            </div>
-                        </form>
-
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h1 class="page-title mb-0">Все авторы</h1>
+                        <div sec:authorize="isAuthenticated()">
+                            <a th:href="@{/authors/authorform}" class="btn btn-success">Добавить автора</a>
+                        </div>
                     </div>
+
+                    <form th:action="@{/authors}" method="get" class="bg-light p-3 rounded shadow-sm">
+                        <div class="row g-3 align-items-end">
+                            <div class="col-md-6 col-lg-5">
+                                <label for="authorName" class="form-label">Имя автора</label>
+                                <input type="text" id="authorName" class="form-control" name="authorName"
+                                       placeholder="Поиск по автору" th:value="${authorName}">
+                            </div>
+
+                            <div class="col-md-3 col-lg-2 d-grid">
+                                <button type="submit" class="btn btn-primary">Найти</button>
+                            </div>
+
+                            <div class="col-md-3 col-lg-2 d-grid">
+                                <a th:href="@{/authors}" class="btn btn-outline-secondary">Сбросить</a>
+                            </div>
+                        </div>
+                    </form>
                 </header>
             </div>
 
             <div class="container col-md-9 authors-grid">
-                <div th:each="author : ${authors}">
-                    <div class="author-card">
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                    <div th:each="author : ${authors}" class="col">
+                        <div class="card h-100 shadow-sm author-card position-relative">
 
+                            <div class="card-body">
+                                <h5 class="card-title" th:text="${author.authorName}">Имя автора</h5>
+                                <p class="card-text" th:text="${author.bio}">Биография автора</p>
 
-                        <h2 th:text="${author.authorName}">Имя автора</h2>
-                        <p th:text="${author.bio}">Биография автора</p>
-                        <h4>Книги:</h4>
-                        <ul>
-                            <li th:each="bookAuthor : ${author.bookAuthors}"
-                                th:text="${bookAuthor.book.title}">Название книги</li>
-                        </ul>
+                                <h6>Книги:</h6>
+                                <ul class="list-unstyled mb-0">
+                                    <li th:each="bookAuthor : ${author.bookAuthors}" th:text="${bookAuthor.book.title}">Название книги</li>
+                                </ul>
+                            </div>
 
-                        <div class="action-buttons">
-                            <form th:if="${author.owner.email == #authentication.name}"
-                                  th:action="@{/authors/delete}"
-                                  method="post"
-                                  class="delete-author-btn">
-                                <input type="hidden" name="authorId" th:value="${author.authorId}">
-                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                                <button type="submit" class="btn btn-danger btn-sm same-height-btn rounded-circle"
-                                        title="Удалить автора"
-                                        onclick="return confirm('Вы уверены, что хотите удалить этого автора?')">
-                                    <i class="bi bi-x-circle"></i>
-                                </button>
-                            </form>
+                            <div class="card-footer bg-transparent border-0 d-flex justify-content-end gap-2">
+                                <form th:if="${author.owner.email == #authentication.name}"
+                                      th:action="@{/authors/delete}"
+                                      method="post"
+                                      class="delete-author-btn">
+                                    <input type="hidden" name="authorId" th:value="${author.authorId}">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                    <button type="submit" class="btn btn-danger btn-sm same-height-btn rounded-circle"
+                                            title="Удалить автора"
+                                            onclick="return confirm('Вы уверены, что хотите удалить этого автора?')">
+                                        <i class="bi bi-x-circle"></i>
+                                    </button>
+                                </form>
 
-                            <form th:if="${author.owner.email == #authentication.name}"
-                                  th:action="@{/authors/edit/{id}(id=${author.authorId})}"
-                                  method="get"
-                                  class="update-author-btn">
-                                <button type="submit" class="btn btn-warning btn-sm same-height-btn rounded-circle" title="Редактировать автора">
-                                    <i class="bi bi-pencil"></i>
-                                </button>
-                            </form>
+                                <form th:if="${author.owner.email == #authentication.name}"
+                                      th:action="@{/authors/edit/{id}(id=${author.authorId})}"
+                                      method="get"
+                                      class="update-author-btn">
+                                    <button type="submit" class="btn btn-warning btn-sm same-height-btn rounded-circle" title="Редактировать автора">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                </form>
+                            </div>
 
                         </div>
-
                     </div>
-                    <hr>
                 </div>
             </div>
         </main>
+
     </div>
 </div>
 

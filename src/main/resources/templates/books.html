@@ -16,58 +16,51 @@
     <div class="row">
         <!-- Боковая панель -->
         <div th:replace="fragments/navbar :: sidebar"></div>
-
         <!-- Основное содержимое -->
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
             <div class="container col-md-9">
                 <header class="header">
-                    <h1 class="page-title">Все книги</h1>
-                    <div class="controls">
-                        <form th:action="@{/books}" method="get" class="mb-4">
-                            <div class="row">
-                                <!-- Поиск по названию -->
-                                <div class="col-md-4">
-                                    <input type="text" class="form-control" name="title" placeholder="Поиск по названию"
-                                           th:value="${title}">
-                                </div>
-
-                                <!-- Фильтрация по автору -->
-                                <div class="col-md-3">
-                                    <select class="form-select" name="authorId">
-                                        <option value="">Все авторы</option>
-                                        <option th:each="a : ${authors}" th:value="${a.authorId}"
-                                                th:text="${a.authorName}"
-                                                th:selected="${a.authorId == authorId}">
-                                        </option>
-                                    </select>
-                                </div>
-
-                                <!-- Фильтрация по жанру -->
-                                <div class="col-md-3">
-                                    <select class="form-select" name="genreId">
-                                        <option value="">Все жанры</option>
-                                        <option th:each="g : ${genres}" th:value="${g.genreId}"
-                                                th:text="${g.name}"
-                                                th:selected="${g.genreId == genreId}">
-                                        </option>
-                                    </select>
-                                </div>
-
-                                <div class="col-md-2">
-                                    <button type="submit" class="btn btn-primary w-100">Найти</button>
-                                </div>
-                                <div class="col-md-2 mt-2 mt-md-0">
-                                    <a th:href="@{/books}" class="btn btn-secondary w-100">Сбросить</a>
-                                </div>
-
-                            </div>
-                        </form>
-
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h1 class="page-title mb-0">Все книги</h1>
+                        <div sec:authorize="isAuthenticated()">
+                            <a th:href="@{/books/bookform}" class="btn btn-success">Добавить книгу</a>
+                        </div>
                     </div>
+                    <form th:action="@{/books}" method="get" class="bg-light p-3 rounded shadow-sm">
+                        <div class="row g-3 align-items-end">
+                            <!-- Поиск по названию -->
+                            <div class="col-md-5 col-lg-4">
+                                <label for="title" class="form-label">Название</label>
+                                <input type="text" id="title" name="title" class="form-control" placeholder="Поиск по названию" th:value="${title}">
+                            </div>
+                            <!-- Автор -->
+                            <div class="col-md-4 col-lg-3">
+                                <label for="authorId" class="form-label">Автор</label>
+                                <select id="authorId" name="authorId" class="form-select">
+                                    <option value="">Все авторы</option>
+                                    <option th:each="a : ${authors}" th:value="${a.authorId}"
+                                            th:text="${a.authorName}" th:selected="${a.authorId == authorId}">
+                                    </option>
+                                </select>
+                            </div>
+                            <!-- Жанр -->
+                            <div class="col-md-3 col-lg-2">
+                                <label for="genreId" class="form-label">Жанр</label>
+                                <select id="genreId" name="genreId" class="form-select">
+                                    <option value="">Все жанры</option>
+                                    <option th:each="g : ${genres}" th:value="${g.genreId}"
+                                            th:text="${g.name}" th:selected="${g.genreId == genreId}">
+                                    </option>
+                                </select>
+                            </div>
+                            <!-- Кнопки -->
+                            <div class="col-md-6 col-lg-3 d-flex gap-2 mt-3 mt-lg-0">
+                                <button type="submit" class="btn btn-primary w-100">Найти</button>
+                                <a th:href="@{/books}" class="btn btn-outline-secondary w-100">Сбросить</a>
+                            </div>
+                        </div>
+                    </form>
                 </header>
-            </div>
-            <div sec:authorize="isAuthenticated()">
-                <a th:href="@{books/bookform}" class="btn btn-primary mb-3" >Добавить книгу</a>
             </div>
             <div class="container books-grid col-md-9">
                 <div th:each="book : ${books}" class="book-card"
@@ -76,7 +69,6 @@
                      (userBookCategories.get(book.bookId) == 'Читаю сейчас' ? 'reading' :
                       userBookCategories.get(book.bookId) == 'Хочу прочитать' ? 'want-to-read' :
                       userBookCategories.get(book.bookId) == 'Прочитано' ? 'finished' : '') : ''} : ''">
-
                     <div>
                         <!-- Кнопка удаления книги (только для владельца) -->
                         <form th:if="${book.owner.email == #authentication.name}"
@@ -101,19 +93,14 @@
                                 <i class="bi bi-pencil"></i>
                             </button>
                         </form>
-
                     </div>
-
                     <!-- Бейдж категории (только для авторизованных) -->
-
                     <div sec:authorize="isAuthenticated()"
                          th:if="${userBookCategories.get(book.bookId)}"
                          class="category-badge"
                          th:text="${userBookCategories.get(book.bookId)}">
                     </div>
-
                     <div class="book-cover-container">
-
                         <img th:if="${book.coverUrl != null}"
                              th:src="@{'/images/books/' + ${book.coverUrl}}"
                              class="book-cover"
@@ -122,10 +109,8 @@
                             <span>Нет обложки</span>
                         </div>
                     </div>
-
                     <div class="book-details">
                         <h2 class="book-title" th:text="${book.title}"></h2>
-
                         <div class="book-authors">
                             <span class="authors-label">Авторы:</span>
                             <ul class="authors-list">
@@ -134,9 +119,7 @@
                                 </li>
                             </ul>
                         </div>
-
                         <div class="book-genre" th:text="${book.getGenre().getName()}"></div>
-
                         <div class="book-actions">
                             <button class="btn btn-dark view-book-btn same-height-btn"
                                     th:data-book-id="${book.bookId}"
@@ -148,14 +131,9 @@
                                 Подробнее
                             </button>
                             <div class="book-actions" sec:authorize="isAuthenticated()">
-
-
-
-
                                 <form th:action="@{/books/addToCategory}" method="post" id="categoryForm">
                                     <input type="hidden" name="bookId" th:value="${book.bookId}">
                                     <input type="hidden" name="categoryName" id="categoryInput">
-
                                     <div class="btn-group">
                                         <button type="button" class="btn btn-secondary dropdown-toggle same-height-btn" data-bs-toggle="dropdown">
                                             Действия
@@ -169,8 +147,6 @@
                                                         th:text="${category.name}">
                                                 </button>
                                             </li>
-
-
                                         </ul>
                                     </div>
                                 </form>
@@ -184,9 +160,6 @@
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </form>
-
-
-
                                 <script>
                                     function setCategory(category) {
                                         document.getElementById('categoryInput').value = category.trim();

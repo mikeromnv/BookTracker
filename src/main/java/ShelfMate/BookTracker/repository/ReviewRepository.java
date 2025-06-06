@@ -2,6 +2,7 @@ package ShelfMate.BookTracker.repository;
 
 import ShelfMate.BookTracker.model.Book;
 import ShelfMate.BookTracker.model.Review;
+import ShelfMate.BookTracker.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -40,4 +41,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long>, JpaSpecif
         }
         return null;
     }
+    boolean existsByUserAndBook(User user, Book book);
+
 }

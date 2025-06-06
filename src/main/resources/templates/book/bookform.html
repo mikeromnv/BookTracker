@@ -20,21 +20,28 @@
                 <h2>Добавить новую книгу</h2>
                 <div class="book-form">
                     <form th:action="@{/books/add}" th:object="${bookForm}" method="post" enctype="multipart/form-data">
+
+
+                        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
                         <!-- Название -->
                         <div class="mb-3">
                             <label for="title" class="form-label">Название книги</label>
-                            <input type="text" class="form-control" id="title" th:field="*{title}" required>
+                            <input type="text" th:field="*{title}" id="title" class="form-control"/>
+                            <div th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="text-danger"></div>
                         </div>
 
-                        <!-- ISBN и Год в одной строке -->
+                        <!-- ISBN и Год публикации -->
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="isbnNum" class="form-label">ISBN</label>
-                                <input type="text" class="form-control" id="isbnNum" th:field="*{isbnNum}">
+                                <input type="text" class="form-control" id="isbnNum" th:field="*{isbnNum}" maxlength="17">
+                                <div th:if="${#fields.hasErrors('isbnNum')}" th:errors="*{isbnNum}" class="text-danger"></div>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="yearPublic" class="form-label">Год публикации</label>
                                 <input type="number" class="form-control" id="yearPublic" th:field="*{yearPublic}">
+                                <div th:if="${#fields.hasErrors('yearPublic')}" th:errors="*{yearPublic}" class="text-danger"></div>
                             </div>
                         </div>
 
@@ -42,6 +49,7 @@
                         <div class="mb-3">
                             <label for="description" class="form-label">Описание</label>
                             <textarea class="form-control" id="description" th:field="*{description}" rows="4"></textarea>
+                            <div th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="text-danger"></div>
                         </div>
 
                         <!-- Страницы и Обложка -->
@@ -49,8 +57,9 @@
                             <div class="col-md-6 mb-3">
                                 <label for="pageCount" class="form-label">Количество страниц</label>
                                 <input type="number" class="form-control" id="pageCount" th:field="*{pageCount}">
+                                <div th:if="${#fields.hasErrors('pageCount')}" th:errors="*{pageCount}" class="text-danger"></div>
                             </div>
-                            <div class="mb-3">
+                            <div class="col-md-6 mb-3">
                                 <label for="imageFile" class="form-label">Обложка</label>
                                 <input type="file" class="form-control" id="imageFile" name="imageFile" accept="image/*">
                             </div>
@@ -63,16 +72,16 @@
                                 <option value="">Выберите жанр...</option>
                                 <option th:each="g : ${genres}" th:value="${g.genreId}" th:text="${g.name}"></option>
                             </select>
+                            <div th:if="${#fields.hasErrors('genreId')}" th:errors="*{genreId}" class="text-danger"></div>
                         </div>
 
                         <!-- Авторы -->
                         <div class="mb-4">
                             <label for="authorIds" class="form-label">Авторы</label>
                             <select multiple class="form-select" id="authorIds" th:field="*{authorIds}" size="5">
-                                <option th:each="a : ${authors}"
-                                        th:value="${a.authorId}"
-                                        th:text="${a.authorName}"></option>
+                                <option th:each="a : ${authors}" th:value="${a.authorId}" th:text="${a.authorName}"></option>
                             </select>
+                            <div th:if="${#fields.hasErrors('authorIds')}" th:errors="*{authorIds}" class="text-danger"></div>
                             <small class="form-hint">Для множественного выбора удерживайте Ctrl (Windows) или Command (Mac)</small>
                         </div>
 
@@ -82,7 +91,6 @@
                             <a href="/authors/new" class="btn btn-outline-secondary add-author-link">Добавить нового автора</a>
                         </div>
                     </form>
-
                 </div>
             </div>
         </main>

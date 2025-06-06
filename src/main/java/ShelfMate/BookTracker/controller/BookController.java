@@ -120,18 +120,23 @@ public class BookController {
 
     @PostMapping("/add")
     public String saveBook(
-            @ModelAttribute("bookForm") @Valid BookForm bookForm,
-            @RequestParam("imageFile") MultipartFile imageFile,
+            @Valid @ModelAttribute("bookForm") BookForm bookForm,
             BindingResult result,
+            @RequestParam("imageFile") MultipartFile imageFile,
             Model model,
             Principal principal) throws IOException {
         log.info("Получены данные: {}", bookForm);
+        if (!result.hasFieldErrors("isbnNum") &&
+                bookRepository.existsByIsbnNum(bookForm.getIsbnNum())) {
+            result.rejectValue("isbnNum", "error.bookForm", "Книга с таким ISBN уже существует");
+        }
         if (result.hasErrors()) {
             log.error("Ошибки валидации: {}", result.getAllErrors());
             model.addAttribute("authors", authorService.getAllAuthors());
             model.addAttribute("genres", genreService.getAllGenres());
             return "book/bookform";
         }
+
 
         try {
             // Сохраняем изображение
@@ -150,15 +155,18 @@ public class BookController {
             User currentUser = userService.getByEmail(principal.getName());
             bookForm.setOwner(currentUser);
 
+
+
             bookService.saveBookWithAuthors(bookForm);
             return "redirect:/books?success";
-        } catch (Exception e) {
-            log.error("Ошибка сохранения: ", e);
-            model.addAttribute("error", "Ошибка при сохранении: " + e.getMessage());
+        } catch (RuntimeException e) {
+            log.error("Ошибка бизнес-логики: ", e);
+            model.addAttribute("error", e.getMessage());
             model.addAttribute("authors", authorService.getAllAuthors());
             model.addAttribute("genres", genreService.getAllGenres());
             return "book/bookform";
         }
+
 //        return "redirect:/books";
     }
 
@@ -283,15 +291,29 @@ public class BookController {
 
 
     @PostMapping("/update")
-    public String updateBook(@ModelAttribute("bookForm") BookForm form,
+    public String updateBook(@Valid @ModelAttribute("bookForm") BookForm form,
+                             BindingResult bindingResult,
                              @RequestParam("imageFile") MultipartFile imageFile,
-                             Authentication authentication) throws IOException {
+                             Authentication authentication,
+                             Model model) throws IOException {
         Long bookId = form.getBookId();
+        Book book = bookService.getBookById(bookId);
+        if (bookRepository.existsByIsbnNum(form.getIsbnNum()) && !book.getIsbnNum().equals(form.getIsbnNum())) {
+            bindingResult.rejectValue("isbnNum", "error.bookForm", "Книга с таким ISBN уже существует");
+        }
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("genres", genreService.getAllGenres());
+            model.addAttribute("authors", authorService.getAllAuthors());
+            return "book/book-edit"; // вернуться на форму с ошибками
+        }
+
+
         User user = userService.getByEmail(authentication.getName());
         bookService.updateBook(form, imageFile, user, bookId);
 
         return "redirect:/books";
     }
+
 
 
 

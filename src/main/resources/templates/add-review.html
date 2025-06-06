@@ -49,7 +49,7 @@
       <div class="mb-4">
         <label for="bookSelect" class="form-label fw-bold">Книга</label>
         <select class="form-select form-select-lg" id="bookSelect" th:field="*{book.bookId}" required
-                th:disabled="${review.isNew == false}">
+                th:disabled="${review.isNew == false and not #fields.hasErrors('book.bookId')}">
 
         <option value="" disabled selected>Выберите книгу</option>
           <option th:each="b : ${books}"
@@ -58,6 +58,8 @@
                   th:selected="${review.isNew == false and review.book.bookId == b.bookId}">
           </option>
         </select>
+        <div class="text-danger" th:if="${#fields.hasErrors('book.bookId')}" th:errors="*{book.bookId}"></div>
+
         <div class="invalid-feedback">
           Пожалуйста, выберите книгу
         </div>

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.awt.print.Pageable;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificationExecutor<Book> {
@@ -28,5 +29,9 @@ public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificat
     List<Book> findBooksByFilters(@Param("title") String title,
                                   @Param("authorId") Long authorId,
                                   @Param("genreId") Long genreId);
+
+    Optional<Book> findByIsbnNum(String isbnNum);
+    boolean existsByIsbnNum(String isbnNum);
+
 
 }

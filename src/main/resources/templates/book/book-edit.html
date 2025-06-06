@@ -20,11 +20,14 @@
         <h2>Отредактировать</h2>
         <div class="book-form">
           <form th:action="@{/books/update}" th:object="${bookForm}" method="post" enctype="multipart/form-data">
+<!--            <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>-->
+
             <!-- Название -->
             <input type="hidden" th:field="*{bookId}">
             <div class="mb-3">
               <label for="title" class="form-label">Название книги</label>
               <input type="text" class="form-control" id="title" th:field="*{title}" required>
+              <div th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="text-danger"></div>
             </div>
 
             <!-- ISBN и Год в одной строке -->
@@ -32,10 +35,12 @@
               <div class="col-md-6 mb-3">
                 <label for="isbnNum" class="form-label">ISBN</label>
                 <input type="text" class="form-control" id="isbnNum" th:field="*{isbnNum}">
+                <div th:if="${#fields.hasErrors('isbnNum')}" th:errors="*{isbnNum}" class="text-danger"></div>
               </div>
               <div class="col-md-6 mb-3">
                 <label for="yearPublic" class="form-label">Год публикации</label>
                 <input type="number" class="form-control" id="yearPublic" th:field="*{yearPublic}">
+                <div th:if="${#fields.hasErrors('yearPublic')}" th:errors="*{yearPublic}" class="text-danger"></div>
               </div>
             </div>
 
@@ -43,6 +48,7 @@
             <div class="mb-3">
               <label for="description" class="form-label">Описание</label>
               <textarea class="form-control" id="description" th:field="*{description}" rows="4"></textarea>
+              <div th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="text-danger"></div>
             </div>
 
             <!-- Страницы и Обложка -->
@@ -50,6 +56,7 @@
               <div class="col-md-6 mb-3">
                 <label for="pageCount" class="form-label">Количество страниц</label>
                 <input type="number" class="form-control" id="pageCount" th:field="*{pageCount}">
+                <div th:if="${#fields.hasErrors('pageCount')}" th:errors="*{pageCount}" class="text-danger"></div>
               </div>
               <div class="mb-3">
                 <label class="form-label">Текущая обложка:</label><br>
@@ -68,6 +75,7 @@
                 <option value="">Выберите жанр...</option>
                 <option th:each="g : ${genres}" th:value="${g.genreId}" th:text="${g.name}"></option>
               </select>
+              <div th:if="${#fields.hasErrors('genreId')}" th:errors="*{genreId}" class="text-danger"></div>
             </div>
 
             <!-- Авторы -->
@@ -78,6 +86,7 @@
                         th:value="${a.authorId}"
                         th:text="${a.authorName}"></option>
               </select>
+              <div th:if="${#fields.hasErrors('authorIds')}" th:errors="*{authorIds}" class="text-danger"></div>
               <small class="form-hint">Для множественного выбора удерживайте Ctrl (Windows) или Command (Mac)</small>
             </div>
 
