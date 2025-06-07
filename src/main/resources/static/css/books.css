@@ -1,20 +1,16 @@
 .same-height-btn {
-    height: 40px;         /* одинаковая высота */
-    padding-top: 6px;     /* выровнять текст/иконку */
+    height: 40px;
+    padding-top: 6px;
     padding-bottom: 6px;
     display: inline-flex;
-    align-items: center;  /* вертикальное выравнивание */
+    align-items: center;
     justify-content: center;
 }
-
-
-
 /* Основные стили */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f8f9fa;
     color: #333;
-    line-height: 1.6;
 }
 
 .container {
