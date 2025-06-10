@@ -213,7 +213,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Обработчики для всех кнопок "Подробнее"
+
         document.querySelectorAll('.view-book-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 const bookId = this.getAttribute('data-book-id');
@@ -224,7 +224,7 @@
                 const bookPage = this.getAttribute('data-book-page');
                 const bookISBN = this.getAttribute('data-book-isbn');
 
-                // Заполняем модальное окно
+
                 document.getElementById('bookModalTitle').textContent = bookTitle;
 
                 let modalContent = `
@@ -246,7 +246,6 @@
 
                 document.getElementById('bookModalBody').innerHTML = modalContent;
 
-                // Показываем модальное окно
                 const modal = new bootstrap.Modal(document.getElementById('bookInfoModal'));
                 modal.show();
             });

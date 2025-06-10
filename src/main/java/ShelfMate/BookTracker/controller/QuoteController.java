@@ -37,7 +37,7 @@ public class QuoteController {
         model.addAttribute("books", bookService.getAllBooks());
         model.addAttribute("bookId", bookId);
         model.addAttribute("quoteText", quoteText);
-        return "quotes"; // quotes.html
+        return "quotes";
     }
 
     @GetMapping("/add")

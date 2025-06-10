@@ -11,7 +11,6 @@ public class BookWithRatingDTO {
     private Double averageRating;
     private Integer reviewCount;
 
-    // Можно добавить метод для отображения звездочек
     public String getStarRating() {
         if (averageRating == null) return "Нет оценок";
         return String.format("%.1f ★", averageRating);

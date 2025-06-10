@@ -9,20 +9,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "goaltype") // Имя таблицы в БД
+@Table(name = "goaltype")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class GoalType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "type_id") // Соответствие имени столбца в БД
+    @Column(name = "type_id")
     private Long typeId;
 
-    @Column(nullable = false, unique = true, length = 20) // Ограничения из БД
+    @Column(nullable = false, unique = true, length = 20)
     private String name;
 
-    private String description; // Добавлено поле description из схемы БД
+    private String description;
 
     @OneToMany(mappedBy = "goalType", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserGoal> userGoals = new ArrayList<>();

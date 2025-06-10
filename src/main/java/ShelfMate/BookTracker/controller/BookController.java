@@ -281,12 +281,12 @@ public class BookController {
             return "redirect:/access-denied";
         }
 
-        BookForm form = bookService.convertToForm(book); // Преобразование сущности в форму
+        BookForm form = bookService.convertToForm(book);
         model.addAttribute("bookForm", form);
         model.addAttribute("genres", genreService.getAllGenres());
         model.addAttribute("authors", authorService.getAllAuthors());
 
-        return "book/book-edit"; // Имя шаблона редактирования
+        return "book/book-edit";
     }
 
 
@@ -304,7 +304,7 @@ public class BookController {
         if (bindingResult.hasErrors()) {
             model.addAttribute("genres", genreService.getAllGenres());
             model.addAttribute("authors", authorService.getAllAuthors());
-            return "book/book-edit"; // вернуться на форму с ошибками
+            return "book/book-edit";
         }
 
 

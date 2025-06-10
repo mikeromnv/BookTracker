@@ -43,10 +43,10 @@ public class ReviewController {
             @RequestParam(defaultValue = "10") int size,
             Model model) {
 
-        // Получаем отфильтрованные отзывы
+        // отфильтрованные отзывы
         Page<Review> reviewsPage = reviewService.getAllReviews(bookId, userId, minRating, page-1, size);
 
-        // Получаем дополнительные данные для фильтров
+        //  данные для фильтров
         List<Book> books = bookService.getAllBooks();
         List<User> users = userService.getAllUsers();
 
@@ -72,7 +72,7 @@ public class ReviewController {
     @GetMapping("/add-review")
     public String showAddReviewForm(Model model) {
 
-        List<Book> books = bookService.getAllBooks(); // или bookRepository.findAll()
+        List<Book> books = bookService.getAllBooks();
         model.addAttribute("books", books);
         Review review = new Review();
         review.setRating(1);
@@ -111,8 +111,6 @@ public class ReviewController {
         return "redirect:/allreviews";
     }
 
-
-    // Показать форму редактирования
     @GetMapping("/edit/{id}")
     public String showEditReviewForm(@PathVariable Long id, Model model) {
         Review review = reviewService.getReviewById(id);
@@ -121,15 +119,12 @@ public class ReviewController {
         return "add-review";
     }
 
-
-    // Обработка формы редактирования
     @PostMapping("/edit/{id}")
     public String updateReview(@PathVariable Long id, @ModelAttribute("review") Review updatedReview) {
         reviewService.updateReview(id, updatedReview);
         return "redirect:/allreviews";
     }
 
-    // Удаление отзыва
     @DeleteMapping("/delete/{id}")
     public String deleteReview(@PathVariable Long id, Principal principal) {
         Review review = reviewService.getReviewById(id);

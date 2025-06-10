@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface QuoteRepository extends JpaRepository<Quote, Long> {
-    List<Quote> findAllByOrderByCreatedAtDesc(); // можно сортировать по времени
+    List<Quote> findAllByOrderByCreatedAtDesc();
     List<Quote> findAllByUser(User user);
 
     @Query("SELECT DISTINCT q FROM Quote q " +

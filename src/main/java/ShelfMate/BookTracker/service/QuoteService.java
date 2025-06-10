@@ -36,7 +36,7 @@ public class QuoteService {
         quoteRepository.save(quote);
     }
     public void updateQuote(Quote quote) {
-        quoteRepository.save(quote); // Просто обновляем — ID уже существует
+        quoteRepository.save(quote);
     }
 
     public List<Quote> getQuotesByUser(User user) {

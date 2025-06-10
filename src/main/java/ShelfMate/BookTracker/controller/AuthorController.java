@@ -93,9 +93,9 @@ public class AuthorController {
             return "redirect:/access-denied";
         }
 
-        AuthorForm form = authorService.convertToForm(author); // Преобразование сущности в форму
+        AuthorForm form = authorService.convertToForm(author);
         model.addAttribute("authorForm", form);
-        return "author/author-edit"; // Имя шаблона редактирования
+        return "author/author-edit"; 
     }
 
 
