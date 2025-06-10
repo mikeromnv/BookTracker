@@ -20,6 +20,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AuthorService {
@@ -70,5 +71,11 @@ public class AuthorService {
     public List<Author> searchAuthors(String authorName) {
         return authorRepository.findAuthorsByFilters(authorName);
     }
+
+
+    public List<Author> findByNameContainingIgnoreCase(String name) {
+        return authorRepository.findByAuthorNameContainingIgnoreCase(name);
+    }
+
 
 }

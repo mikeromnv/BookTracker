@@ -21,6 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/authors")
@@ -107,5 +108,15 @@ public class AuthorController {
 
         return "redirect:/authors";
     }
+    @GetMapping("/search")
+    @ResponseBody
+    public List<AuthorForm> searchAuthors(@RequestParam String name) {
+        return authorService.findByNameContainingIgnoreCase(name)
+                .stream()
+                .map(author -> new AuthorForm(author.getAuthorId(), author.getAuthorName(), author.getBio()))
+                .collect(Collectors.toList());
+    }
+
+
 
 }

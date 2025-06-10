@@ -2,6 +2,7 @@ package ShelfMate.BookTracker.service;
 
 import ShelfMate.BookTracker.dto.RegisterRequest;
 import ShelfMate.BookTracker.model.User;
+import ShelfMate.BookTracker.model.UserRole;
 import ShelfMate.BookTracker.repository.UserRepository;
 import ShelfMate.BookTracker.repository.UserRoleRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,8 @@ public class UserService {
         User user = new User();
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
+        UserRole userRole = userRoleRepository.findByName("USER");
+        user.setRole(userRole);
         user.setPasswordHash(passwordEncoder.encode(request.getPasswordHash()));
 
         userRepository.save(user);

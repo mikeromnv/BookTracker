@@ -78,17 +78,32 @@
               <div th:if="${#fields.hasErrors('genreId')}" th:errors="*{genreId}" class="text-danger"></div>
             </div>
 
-            <!-- Авторы -->
-            <div class="mb-4">
-              <label for="authorIds" class="form-label">Авторы</label>
-              <select multiple class="form-select" id="authorIds" th:field="*{authorIds}" size="5">
-                <option th:each="a : ${authors}"
-                        th:value="${a.authorId}"
-                        th:text="${a.authorName}"></option>
-              </select>
-              <div th:if="${#fields.hasErrors('authorIds')}" th:errors="*{authorIds}" class="text-danger"></div>
-              <small class="form-hint">Для множественного выбора удерживайте Ctrl (Windows) или Command (Mac)</small>
-            </div>
+<!--            &lt;!&ndash; Авторы &ndash;&gt;-->
+<!--            <div class="mb-4">-->
+<!--              <label for="authorIds" class="form-label">Авторы</label>-->
+<!--              <select multiple class="form-select" id="authorIds" th:field="*{authorIds}" size="5">-->
+<!--                <option th:each="a : ${authors}"-->
+<!--                        th:value="${a.authorId}"-->
+<!--                        th:text="${a.authorName}"></option>-->
+<!--              </select>-->
+<!--              <div th:if="${#fields.hasErrors('authorIds')}" th:errors="*{authorIds}" class="text-danger"></div>-->
+<!--              <small class="form-hint">Для множественного выбора удерживайте Ctrl (Windows) или Command (Mac)</small>-->
+<!--            </div>-->
+
+              <!-- Авторы -->
+              <div class="mb-3">
+                  <label for="authorSearch" class="form-label">Поиск автора</label>
+                  <input type="text" id="authorSearch" class="form-control" placeholder="Начните вводить имя автора...">
+              </div>
+
+              <div id="authorSelectWrapper" class="mb-4">
+                  <!--                            <label for="authorIds" class="form-label">Авторы</label>-->
+                  <select multiple class="form-select" id="authorIds" th:field="*{authorIds}" size="5">
+                      <option th:each="a : ${authors}" th:value="${a.authorId}" th:text="${a.authorName}"></option>
+                  </select>
+                  <div th:if="${#fields.hasErrors('authorIds')}" th:errors="*{authorIds}" class="text-danger"></div>
+                  <small class="form-hint">Для множественного выбора удерживайте Ctrl (Windows) или Command (Mac)</small>
+              </div>
 
             <!-- Кнопки -->
             <div class="d-flex justify-content-between align-items-center">
@@ -101,6 +116,25 @@
     </main>
   </div>
 </div>
+<script>
+    document.getElementById('authorSearch').addEventListener('input', function () {
+        const query = this.value;
+
+        fetch(`/authors/search?name=${encodeURIComponent(query)}`)
+            .then(res => res.json())
+            .then(authors => {
+                const select = document.getElementById('authorIds');
+                select.innerHTML = '';
+
+                authors.forEach(author => {
+                    const option = document.createElement('option');
+                    option.value = author.authorId;
+                    option.textContent = author.authorName;
+                    select.appendChild(option);
+                });
+            });
+    });
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
