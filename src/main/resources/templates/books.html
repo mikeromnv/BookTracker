@@ -129,6 +129,8 @@
 
                                     th:data-book-description="${book.description}"
                                     th:data-book-year="${book.yearPublic}"
+                                    th:data-book-page="${book.pageCount}"
+                                    th:data-book-isbn="${book.isbnNum}"
                                     th:data-book-cover="${book.coverUrl != null ? '/images/books/' + book.coverUrl : ''}">
                                 Подробнее
                             </button>
@@ -219,6 +221,8 @@
                 const bookDescription = this.getAttribute('data-book-description');
                 const bookYear = this.getAttribute('data-book-year');
                 const bookCover = this.getAttribute('data-book-cover');
+                const bookPage = this.getAttribute('data-book-page');
+                const bookISBN = this.getAttribute('data-book-isbn');
 
                 // Заполняем модальное окно
                 document.getElementById('bookModalTitle').textContent = bookTitle;
@@ -233,6 +237,8 @@
                     <div class="${bookCover ? 'col-md-8' : 'col-12'}">
                         <h4>${bookTitle}</h4>
                         ${bookYear ? `<p><strong>Год издания:</strong> ${bookYear}</p>` : ''}
+                        ${bookPage ? `<p><strong>Количество страниц:</strong> ${bookPage}</p>` : ''}
+                        ${bookISBN ? `<p><strong>ISBN:</strong> ${bookISBN}</p>` : ''}
                         ${bookDescription ? `<p class="mt-3">${bookDescription}</p>` : '<p>Описание отсутствует</p>'}
                     </div>
                 </div>
